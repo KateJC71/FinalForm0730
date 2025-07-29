@@ -284,10 +284,10 @@ async function initDatabase() {
         // 插入折扣碼 - 只更新有效期，保持原折扣值
         db.run(`
           INSERT OR REPLACE INTO discount_codes (code, name, discount_type, discount_value, valid_from, valid_until, active) VALUES
-          ('EarlyBird2526', '早鳥優惠 2025-2026', 'percentage', 20, '2024-01-01', '2027-12-31', 1),
-          ('SnowPink2526', 'Snow Pink 合作優惠', 'percentage', 5, '2024-01-01', '2027-12-31', 1),
-          ('SSW2526', 'SSW 合作優惠', 'percentage', 5, '2024-01-01', '2027-12-31', 1),
-          ('SFS2526', 'SFS 專屬優惠', 'percentage', 5, '2024-01-01', '2027-12-31', 1)
+          ('EarlyBird2526', '早鳥優惠 2025-2026', 'percentage', 20, '2024-01-01', '2025-08-31', 1),
+          ('SnowPink2526', 'Snow Pink 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1),
+          ('SSW2526', 'SSW 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1),
+          ('SFS2526', 'SFS 專屬優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1)
         `, (err) => {
           if (err) {
             console.error('❌ 插入折扣碼失敗:', err);
