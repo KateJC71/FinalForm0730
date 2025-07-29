@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-snow-50 text-snow-900;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+  
+  .btn-primary {
+    @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-snow-200 text-snow-900 hover:bg-snow-300 focus:ring-snow-500;
+  }
+  
+  .btn-outline {
+    @apply btn border border-snow-300 text-snow-700 hover:bg-snow-50 focus:ring-snow-500;
+  }
+  
+  .input {
+    @apply w-full px-3 py-2 border border-snow-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+  }
+  
+  /* 日期輸入框字體加大 */
+  input[type="date"] {
+    font-size: 16px !important;
+  }
+  
+  /* 日期輸入框的日曆彈窗字體 */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    font-size: 16px;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-snow-200 p-6;
+  }
+} 
