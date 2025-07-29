@@ -5,12 +5,12 @@ import { db } from '../database/init';
  * 例：RSV20240719001
  */
 export async function generateReservationNumber(): Promise<string> {
-  // 使用台灣時區 (UTC+8)
+  // 使用日本時區 (UTC+9)
   const today = new Date();
-  const taiwanTime = new Date(today.getTime() + (8 * 60 * 60 * 1000));
-  const dateStr = taiwanTime.getFullYear().toString() + 
-                  (taiwanTime.getMonth() + 1).toString().padStart(2, '0') + 
-                  taiwanTime.getDate().toString().padStart(2, '0');
+  const japanTime = new Date(today.getTime() + (9 * 60 * 60 * 1000));
+  const dateStr = japanTime.getFullYear().toString() + 
+                  (japanTime.getMonth() + 1).toString().padStart(2, '0') + 
+                  japanTime.getDate().toString().padStart(2, '0');
   
   return new Promise((resolve, reject) => {
     // 查詢今天已有多少預約（用於生成序號）
@@ -65,12 +65,12 @@ export async function generateUniqueReservationNumber(): Promise<string> {
   
   while (await isReservationNumberExists(reservationNumber) && attempts < maxAttempts) {
     attempts++;
-    // 使用台灣時區 (UTC+8)
+    // 使用日本時區 (UTC+9)
     const today = new Date();
-    const taiwanTime = new Date(today.getTime() + (8 * 60 * 60 * 1000));
-    const dateStr = taiwanTime.getFullYear().toString() + 
-                    (taiwanTime.getMonth() + 1).toString().padStart(2, '0') + 
-                    taiwanTime.getDate().toString().padStart(2, '0');
+    const japanTime = new Date(today.getTime() + (9 * 60 * 60 * 1000));
+    const dateStr = japanTime.getFullYear().toString() + 
+                    (japanTime.getMonth() + 1).toString().padStart(2, '0') + 
+                    japanTime.getDate().toString().padStart(2, '0');
     
     // 如果重複，使用微秒時間戳作為後綴
     const timestamp = Date.now().toString().slice(-3);
