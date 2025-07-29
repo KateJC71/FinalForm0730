@@ -8,7 +8,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'https://snowforce-reservation.onrender.com',
+        target: 'https://finalform0730.onrender.com',
         changeOrigin: true
       }
     }

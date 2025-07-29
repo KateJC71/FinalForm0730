@@ -36,9 +36,7 @@ const allowedOrigins = [
   'http://localhost:5174',
   'http://localhost:5175',
   'http://localhost:5176',
-  'https://snow-equipment-reservation-frontend-69ejvtmju.vercel.app',
-  'https://snow-equipment-reservation-frontend.vercel.app',
-  'https://snow-equipment-reservation-frontend-gto3msy6m.vercel.app'  // 新增最新的 Vercel 域名
+  'https://final-form0730-frontend.vercel.app'
 ];
 
 if (process.env.FRONTEND_URL) {
