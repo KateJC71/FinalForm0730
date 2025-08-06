@@ -424,7 +424,7 @@ const Reservation: React.FC = () => {
     const isCrossStore = rentStore && returnStore && rentStore !== returnStore;
     persons.forEach((p, idx) => {
       const age = parseInt(p.age, 10);
-      const isChild = age <= 13;
+      const isChild = age <= 12;
       let group = isChild ? 'child' : 'adult';
       let equipType = '';
       if (p.equipType.includes('大全配')) equipType = '大全配';
