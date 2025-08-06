@@ -468,7 +468,8 @@ const Reservation: React.FC = () => {
       // Fase快穿
       let fase = 0;
       if (p.fastWear === '是') {
-        fase = priceTable.fase[priceIdx] + (extraDays > 0 ? priceTable.fase[5] * extraDays : 0);
+        // Fase快穿是每天2000元
+        fase = 2000 * days;
       }
       // 甲地租乙地還
       let cross = 0;
