@@ -722,6 +722,9 @@ const Reservation: React.FC = () => {
                   className="input w-24"
                   required
                 />
+                <p className="text-sm text-gray-600 mt-1">
+                  ※ 12歲（含）以下為兒童計價，13歲以上為成人計價
+                </p>
               </div>
               <div className="mb-4">
                 <label className="block mb-1">租借地點</label>
