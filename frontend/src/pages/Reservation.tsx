@@ -335,6 +335,12 @@ const Reservation: React.FC = () => {
           person = { ...person, clothingType: '否', helmetOnly: '否' };
         }
       }
+      // 若選擇雙板，自動設定快穿為否
+      if (key === 'skiType') {
+        if (value === '雙板') {
+          person = { ...person, fastWear: '否' };
+        }
+      }
       updated[idx] = person;
       return updated;
     });
@@ -927,7 +933,7 @@ const Reservation: React.FC = () => {
                       <option value="">單租安全帽</option>
                       {yesNo.map(t => <option key={t} value={t}>{t}</option>)}
                     </select>
-                    <select className="input" value={p.fastWear} onChange={e => handlePersonChange(idx, 'fastWear', e.target.value)} required>
+                    <select className="input" value={p.fastWear} onChange={e => handlePersonChange(idx, 'fastWear', e.target.value)} required disabled={p.skiType === '雙板'}>
                       <option value="">是否升級Fase快穿裝備</option>
                       {yesNo.map(t => <option key={t} value={t}>{t}</option>)}
                     </select>
