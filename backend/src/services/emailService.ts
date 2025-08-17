@@ -167,14 +167,26 @@ class EmailService {
                 <li>請確認所有個人資料正確，如有異動請盡快聯繫我們</li>
             </ul>
             
-            <h4>取消與退款政策：</h4>
+            <h4>退款與改期政策（以取件日為基準）</h4>
+            
+            <h5><strong>退款規則</strong></h5>
             <ul>
-                <li><strong>租用開始7日前：</strong>退還50%</li>
-                <li><strong>租用開始3日前：</strong>退還20%</li>
-                <li><strong>租用開始3日內：</strong>不予退款</li>
-                <li>※部分取消視為整筆取消，需重新預約</li>
-                <li>※請注意付款後退款皆需扣除4%手續費</li>
+                <li><strong>取件日前 14 天（不含當日）以前取消</strong> → 退還扣除刷卡手續費（4%）後的全額</li>
+                <li><strong>取件日前 7～13 天取消</strong> → 退還已付款項的 50%</li>
+                <li><strong>取件日前 4～6 天取消</strong> → 退還已付款項的 20%</li>
+                <li><strong>取件日前 3 天（含當日）取消</strong> → 恕不退款</li>
             </ul>
+            
+            <h5><strong>改期與變更規則</strong></h5>
+            <ul>
+                <li><strong>更改取件日期：</strong>最晚需在取件日前 3 天（不含當日） 辦理，且僅可更改一次</li>
+                <li><strong>更改租借天數或部分人數取消</strong> → 視同整筆訂單取消，需重新預約</li>
+            </ul>
+            
+            <p style="margin-top: 15px; font-size: 14px;">
+                💡 <strong>天數計算方式：</strong>以取件日為第 0 天，往前一天為第 1 天，再依此類推。<br>
+                💳 <strong>付款方式：</strong>日圓／僅接受信用卡付款
+            </p>
         </div>
     </div>
     
