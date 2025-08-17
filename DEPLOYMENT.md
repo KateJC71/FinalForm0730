@@ -12,12 +12,12 @@
 ## 部署架構
 
 ### 前端 (Vercel)
-- 部署 URL: https://snow-equipment-reservation-frontend-gto3msy6m.vercel.app
+- 部署 URL: https://reservation.furano-snowforce.com
 - 技術棧: React + TypeScript + Vite
 - 自動從 GitHub main 分支部署
 
 ### 後端 (Render)
-- 部署 URL: https://snowforce-reservation.onrender.com
+- 部署 URL: https://finalform0730.onrender.com
 - 技術棧: Node.js + Express + SQLite
 - 自動從 GitHub main 分支部署
 
@@ -40,7 +40,7 @@ cd snow-equipment-reservation
 3. 設置輸出目錄：`frontend/dist`
 4. 環境變數設置：
    ```
-   VITE_API_BASE_URL=https://snowforce-reservation.onrender.com
+   VITE_API_BASE_URL=https://finalform0730.onrender.com/api
    ```
 
 ### 3. 後端部署 (Render)
@@ -52,7 +52,7 @@ cd snow-equipment-reservation
    NODE_ENV=production
    PORT=3000
    GOOGLE_SHEETS_URL=<你的Google Apps Script URL>
-   FRONTEND_URL=https://snow-equipment-reservation-frontend-gto3msy6m.vercel.app
+   FRONTEND_URL=https://reservation.furano-snowforce.com
    ```
 
 ### 4. Google Apps Script 設置
@@ -102,9 +102,8 @@ cd snow-equipment-reservation
 ```javascript
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://snow-equipment-reservation-frontend-69ejvtmju.vercel.app',
-  'https://snow-equipment-reservation-frontend.vercel.app',
-  'https://snow-equipment-reservation-frontend-gto3msy6m.vercel.app'
+  'https://final-form0730-frontend.vercel.app',
+  'https://reservation.furano-snowforce.com'
 ];
 ```
 

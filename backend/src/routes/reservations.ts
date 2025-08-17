@@ -5,6 +5,7 @@ import { authenticateToken, AuthRequest } from '../middleware/auth';
 import { googleSheetsService } from '../services/googleSheets';
 import { generateUniqueReservationNumber } from '../utils/reservationNumber';
 import { recordDiscountUsage } from '../controllers/discountController';
+import emailService from '../services/emailService';
 
 interface Equipment {
   id: number;
@@ -306,6 +307,61 @@ router.post('/', [
         }
       } catch (error) {
         console.error('❌ Error syncing to Google Sheets:', error);
+      }
+
+      // 發送確認郵件（異步，不影響回應）
+      try {
+        console.log('📧 Starting email service for reservation:', reservationId);
+        const emailData = {
+          applicant: {
+            name: user_name,
+            email: user_email,
+            phone: user_phone,
+            hotel: req.body.hotel || '',
+          },
+          persons: req.body.persons || [{
+            name: user_name,
+            age: req.body.age || '25',
+            gender: req.body.gender || '未指定',
+            height: req.body.height || '170',
+            weight: req.body.weight || '65',
+            footSize: req.body.shoeSize || req.body.footSize || '26',
+            level: req.body.level || '初學者',
+            skiType: req.body.skiType || '單板',
+            boardType: req.body.boardType || '一般標準板',
+            equipType: req.body.equipType || '大全配',
+            clothingType: req.body.clothingType,
+            helmetOnly: req.body.helmetOnly,
+            fastWear: req.body.fastWear,
+          }],
+          startDate: start_date,
+          endDate: end_date,
+          pickupDate: pickup_date || start_date,
+          pickupTime: pickup_time || '09:00',
+          rentStore: req.body.rentStore || req.body.pickupLocation || '富良野店',
+          returnStore: req.body.returnStore || req.body.returnLocation || '富良野店',
+          totalPrice: finalTotalPrice,
+          originalPrice: originalPrice || finalTotalPrice + validatedDiscountAmount,
+          discountCode: discountCode || '',
+          discountAmount: validatedDiscountAmount,
+          reservationNumber: reservationNumber,
+        };
+
+        const emailResults = await emailService.sendReservationEmails(emailData);
+        if (emailResults.customer) {
+          console.log(`✅ Customer confirmation email sent for reservation ${reservationId}`);
+        } else {
+          console.log(`⚠️  Failed to send customer confirmation email for reservation ${reservationId}`);
+        }
+        
+        if (emailResults.store) {
+          console.log(`✅ Store notification email sent for reservation ${reservationId}`);
+        } else {
+          console.log(`⚠️  Failed to send store notification email for reservation ${reservationId}`);
+        }
+      } catch (error) {
+        console.error('❌ Error sending confirmation emails:', error);
+        // 不影響預約創建，僅記錄錯誤
       }
 
       res.status(201).json({
