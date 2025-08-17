@@ -950,6 +950,33 @@ const Reservation: React.FC = () => {
                     <li>8:00-12:00為尖峰時段，預約客戶優先</li>
                   </ul>
                 </div>
+                
+                <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
+                  <h4 className="font-semibold text-yellow-800 mb-2">📋 退款與改期政策（以取件日為基準）</h4>
+                  
+                  <div className="mb-3">
+                    <p className="font-medium text-yellow-700 mb-1">退款規則</p>
+                    <ul className="list-disc list-inside ml-4 space-y-1 text-yellow-700">
+                      <li><strong>取件日前 14 天（不含當日）以前取消</strong> → 退還扣除刷卡手續費（4%）後的全額</li>
+                      <li><strong>取件日前 7～13 天取消</strong> → 退還已付款項的 50%</li>
+                      <li><strong>取件日前 4～6 天取消</strong> → 退還已付款項的 20%</li>
+                      <li><strong>取件日前 3 天（含當日）取消</strong> → 恕不退款</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="mb-3">
+                    <p className="font-medium text-yellow-700 mb-1">改期與變更規則</p>
+                    <ul className="list-disc list-inside ml-4 space-y-1 text-yellow-700">
+                      <li><strong>更改取件日期：</strong>最晚需在取件日前 3 天（不含當日）辦理，且僅可更改一次</li>
+                      <li><strong>更改租借天數或部分人數取消</strong> → 視同整筆訂單取消，需重新預約</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="text-xs text-yellow-600 border-t border-yellow-200 pt-2 mt-2">
+                    <p>💡 <strong>天數計算方式：</strong>以取件日為第 0 天，往前一天為第 1 天，再依此類推</p>
+                    <p>💳 <strong>付款方式：</strong>日圓／僅接受信用卡付款</p>
+                  </div>
+                </div>
               </div>
             </>
           )}
