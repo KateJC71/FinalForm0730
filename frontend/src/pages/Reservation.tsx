@@ -327,7 +327,8 @@ const Reservation: React.FC = () => {
   useEffect(() => {
     setError('');
     calcPrice();
-  }, [persons, startDate, endDate, rentStore, returnStore]);
+    // 即時價格計算在第3步會自動觸發重新渲染
+  }, [persons, startDate, endDate, rentStore, returnStore, discountInfo]);
 
   // 在組件卸載時清理事件監聽器
   useEffect(() => {
@@ -453,6 +454,108 @@ const Reservation: React.FC = () => {
     }
   };
 
+  // 即時價格計算（支援部分欄位）
+  const calcRealTimePrice = () => {
+    // 如果沒有日期，無法計算
+    if (!startDate || !endDate) return { total: 0, details: [] };
+    
+    const days = getDays(startDate, endDate);
+    const priceIdx = getPriceIndex(days);
+    const extraDays = days > 5 ? days - 5 : 0;
+    const isCrossStore = rentStore && returnStore && rentStore !== returnStore;
+    
+    let total = 0;
+    let details: any[] = [];
+    
+    persons.forEach((p, idx) => {
+      let personTotal = 0;
+      let items: any[] = [];
+      
+      // 只計算已填寫的欄位
+      if (p.age && p.equipType && p.boardType) {
+        const age = parseInt(p.age, 10);
+        const isChild = age <= 12;
+        const group = isChild ? 'child' : 'adult';
+        
+        // 判斷裝備類型
+        let equipType = '';
+        if (p.equipType.includes('大全配')) equipType = '大全配';
+        else if (p.equipType.includes('板+靴') || p.equipType.includes('板靴組')) equipType = '板靴組';
+        else if (p.equipType.includes('僅租雪板')) equipType = '單租雪板';
+        
+        // 判斷雪板類型
+        let boardCat = 'standard';
+        if (p.boardType.includes('進階')) boardCat = 'advanced';
+        else if (p.boardType.includes('粉雪')) boardCat = 'powder';
+        
+        // 計算主裝備價格
+        if (equipType) {
+          let main = 0;
+          if (group === 'adult') {
+            const boardCatKey = boardCat as 'standard' | 'advanced' | 'powder';
+            if (equipType in priceTable.adult[boardCatKey]) {
+              main = (priceTable.adult[boardCatKey][equipType as '大全配' | '板靴組' | '單租雪板'][priceIdx] ?? 0)
+                + (extraDays > 0 ? (priceTable.adult[boardCatKey][equipType as '大全配' | '板靴組' | '單租雪板'][5] ?? 0) * extraDays : 0);
+            }
+          } else {
+            if (equipType in priceTable.child.standard) {
+              main = (priceTable.child.standard[equipType as '大全配' | '板靴組' | '單租雪板'][priceIdx] ?? 0)
+                + (extraDays > 0 ? (priceTable.child.standard[equipType as '大全配' | '板靴組' | '單租雪板'][5] ?? 0) * extraDays : 0);
+            }
+          }
+          if (main > 0) {
+            personTotal += main;
+            const label = `${boardCat === 'advanced' ? '進階' : boardCat === 'powder' ? '粉雪' : '標準'}${equipType}`;
+            items.push({ label, price: main });
+          }
+        }
+        
+        // 計算雪衣褲（如果不是大全配）
+        if (!p.equipType.includes('大全配') && p.clothingType && p.clothingType !== '否') {
+          let clothing = 0;
+          if (p.clothingType === '租一整套(雪衣及雪褲)') {
+            clothing = isChild ? priceTable.child.clothingSet[priceIdx] + (extraDays > 0 ? priceTable.child.clothingSet[5] * extraDays : 0)
+                               : priceTable.adult.clothingSet[priceIdx] + (extraDays > 0 ? priceTable.adult.clothingSet[5] * extraDays : 0);
+            items.push({ label: '雪衣雪褲套裝', price: clothing });
+          } else if (p.clothingType === '單租雪衣' || p.clothingType === '單租雪褲') {
+            clothing = isChild ? priceTable.child.clothingSingle[priceIdx] + (extraDays > 0 ? priceTable.child.clothingSingle[5] * extraDays : 0)
+                               : priceTable.adult.clothingSingle[priceIdx] + (extraDays > 0 ? priceTable.adult.clothingSingle[5] * extraDays : 0);
+            items.push({ label: p.clothingType, price: clothing });
+          }
+          personTotal += clothing;
+        }
+        
+        // 計算安全帽（如果不是大全配）
+        if (!p.equipType.includes('大全配') && p.helmetOnly === '是') {
+          const helmet = priceTable.helmet[priceIdx] + (extraDays > 0 ? priceTable.helmet[5] * extraDays : 0);
+          personTotal += helmet;
+          items.push({ label: '安全帽', price: helmet });
+        }
+        
+        // 計算Fase快穿
+        if (p.fastWear === '是' && p.skiType !== '雙板') {
+          const fase = 2000 * days;
+          personTotal += fase;
+          items.push({ label: 'Fase快穿', price: fase });
+        }
+      }
+      
+      details.push({
+        index: idx + 1,
+        items,
+        subtotal: personTotal
+      });
+      total += personTotal;
+    });
+    
+    // 加入甲地租乙地還費用
+    if (isCrossStore) {
+      total += 3000 * persons.filter(p => p.age && p.equipType).length;
+    }
+    
+    return { total, details, days, crossStore: isCrossStore };
+  };
+  
   // 價格計算主邏輯
   const calcPrice = () => {
     const days = getDays(startDate, endDate);
@@ -939,7 +1042,77 @@ const Reservation: React.FC = () => {
             </div>
           )}
           {step === 3 && (
-            <div className="space-y-8">
+            <div className="relative">
+              {/* 即時價格面板 - 桌面版右側，手機版底部 */}
+              {startDate && endDate && (
+                <div className="lg:absolute lg:right-0 lg:top-0 lg:w-80 lg:-mr-96">
+                  <div className="sticky top-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 mb-4 lg:mb-0 transition-all duration-300 hover:shadow-xl">
+                    <h3 className="font-semibold text-lg mb-3 flex items-center">
+                      <span className="mr-2">💰</span> 即時價格預覽
+                    </h3>
+                    
+                    {(() => {
+                      const { total, details, days, crossStore } = calcRealTimePrice();
+                      return (
+                        <>
+                          <div className="text-sm text-gray-600 mb-3">
+                            租借天數：{days || 0}天
+                          </div>
+                          
+                          {details.map((person: any) => (
+                            <div key={person.index} className="mb-3 pb-3 border-b border-gray-100 last:border-0">
+                              <div className="font-medium text-sm mb-1">
+                                第{person.index}位租借者
+                              </div>
+                              {person.items.length > 0 ? (
+                                <>
+                                  {person.items.map((item: any, idx: number) => (
+                                    <div key={idx} className="flex justify-between text-xs text-gray-600 ml-2">
+                                      <span>• {item.label}</span>
+                                      <span>¥{item.price.toLocaleString()}</span>
+                                    </div>
+                                  ))}
+                                  <div className="flex justify-between text-sm font-medium mt-1 ml-2">
+                                    <span>小計</span>
+                                    <span>¥{person.subtotal.toLocaleString()}</span>
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="text-xs text-gray-400 ml-2">尚未選擇裝備</div>
+                              )}
+                            </div>
+                          ))}
+                          
+                          {crossStore && (
+                            <div className="flex justify-between text-sm mb-2">
+                              <span>甲地租乙地還</span>
+                              <span>¥{(3000 * details.filter((d: any) => d.subtotal > 0).length).toLocaleString()}</span>
+                            </div>
+                          )}
+                          
+                          {discountInfo && discountInfo.valid && (
+                            <div className="flex justify-between text-sm text-green-600 mb-2">
+                              <span>折扣 ({applicant.discountCode})</span>
+                              <span>-¥{discountAmount.toLocaleString()}</span>
+                            </div>
+                          )}
+                          
+                          <div className="border-t pt-2 mt-2">
+                            <div className="flex justify-between font-bold text-lg">
+                              <span>總計</span>
+                              <span className="text-primary-600 transition-all duration-300 transform">
+                                ¥{(total - (discountAmount || 0)).toLocaleString()}
+                              </span>
+                            </div>
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
+                </div>
+              )}
+              
+              <div className="space-y-8 lg:pr-96">
               {persons.map((p, idx) => (
                 <div key={idx} className="border rounded-lg p-4 mb-2 bg-snow-50">
                   <div className="font-semibold mb-2">第 {idx + 1} 位租借者</div>
@@ -985,6 +1158,7 @@ const Reservation: React.FC = () => {
                   </div>
                 </div>
               ))}
+              </div>
             </div>
           )}
           {step === 4 && (
