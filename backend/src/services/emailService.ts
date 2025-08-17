@@ -254,7 +254,7 @@ class EmailService {
       const mailOptions = {
         from: `"雪具預約系統" <${process.env.SMTP_USER}>`,
         to: data.applicant.email,
-        subject: `預約確認 - ${data.reservationNumber} | 雪具預約系統`,
+        subject: `Snow Force雪具租借預約 ${data.reservationNumber}`,
         html: htmlContent,
         text: `預約確認通知 - 預約編號：${data.reservationNumber}，租借日期：${data.startDate} 至 ${data.endDate}，取件時間：${data.pickupDate} ${data.pickupTime}，總金額：¥${data.totalPrice.toLocaleString()}`,
       };
@@ -282,7 +282,7 @@ class EmailService {
       const mailOptions = {
         from: `"雪具預約系統" <${process.env.SMTP_USER}>`,
         to: storeEmail,
-        subject: `🚨 新預約通知 - ${data.reservationNumber} | ${data.pickupDate} ${data.pickupTime}`,
+        subject: `Snow Force新預約通知 ${data.reservationNumber}`,
         html: htmlContent,
         text: `新預約通知 - 預約編號：${data.reservationNumber}，申請人：${data.applicant.name}，取件：${data.pickupDate} ${data.pickupTime}，人數：${data.persons.length}人`,
       };
