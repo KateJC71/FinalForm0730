@@ -89,8 +89,8 @@ router.post('/', [
     return res.status(400).json({ message: '開始日期不能早於今天' });
   }
 
-  if (end <= start) {
-    return res.status(400).json({ message: '結束日期必須晚於開始日期' });
+  if (end < start) {
+    return res.status(400).json({ message: '結束日期不能早於開始日期' });
   }
 
   // 檢查雪具是否可用
