@@ -1042,10 +1042,10 @@ const Reservation: React.FC = () => {
             </div>
           )}
           {step === 3 && (
-            <div className="relative">
+            <div className="lg:flex lg:gap-6">
               {/* 即時價格面板 - 桌面版右側，手機版底部 */}
               {startDate && endDate && (
-                <div className="lg:absolute lg:right-0 lg:top-0 lg:w-80 lg:-mr-96">
+                <div className="lg:w-80 lg:flex-shrink-0 lg:order-2">
                   <div className="sticky top-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 mb-4 lg:mb-0 transition-all duration-300 hover:shadow-xl">
                     <h3 className="font-semibold text-lg mb-3 flex items-center">
                       <span className="mr-2">💰</span> 即時價格預覽
@@ -1112,7 +1112,8 @@ const Reservation: React.FC = () => {
                 </div>
               )}
               
-              <div className="space-y-8 lg:pr-96">
+              <div className="lg:flex-1 lg:order-1">
+                <div className="space-y-8">
               {persons.map((p, idx) => (
                 <div key={idx} className="border rounded-lg p-4 mb-2 bg-snow-50">
                   <div className="font-semibold mb-2">第 {idx + 1} 位租借者</div>
@@ -1158,6 +1159,7 @@ const Reservation: React.FC = () => {
                   </div>
                 </div>
               ))}
+                </div>
               </div>
             </div>
           )}
