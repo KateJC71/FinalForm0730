@@ -165,7 +165,15 @@ class EmailService {
                 <li>請準時於 ${data.pickupDate} ${data.pickupTime} 到 ${data.rentStore} 取件</li>
                 <li>取件時請攜帶身分證明文件</li>
                 <li>請確認所有個人資料正確，如有異動請盡快聯繫我們</li>
-                <li>如需取消或修改預約，請提前24小時聯繫我們</li>
+            </ul>
+            
+            <h4>取消與退款政策：</h4>
+            <ul>
+                <li><strong>租用開始7日前：</strong>退還50%</li>
+                <li><strong>租用開始3日前：</strong>退還20%</li>
+                <li><strong>租用開始3日內：</strong>不予退款</li>
+                <li>※部分取消視為整筆取消，需重新預約</li>
+                <li>※請注意付款後退款皆需扣除4%手續費</li>
             </ul>
         </div>
     </div>
