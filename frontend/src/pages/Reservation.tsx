@@ -377,15 +377,26 @@ const Reservation: React.FC = () => {
     });
   };
 
-  // 驗證表單
+  // 驗證表單（舊函數，保留給向後相容）
   const validate = () => {
-    if (!startDate || !endDate) return '請選擇日期';
-    // 允許同一天，不再檢查 endDate > startDate
-    if (!rentStore || !returnStore) return '請選擇租借地點與歸還地點';
+    // 檢查第1步欄位
+    const step1Missing = getMissingStep1Fields({
+      startDate,
+      endDate,
+      rentStore,
+      returnStore,
+      pickupDate,
+      pickupTime
+    });
+    if (step1Missing.length > 0) {
+      return `請填寫以下欄位：${step1Missing.join('、')}`;
+    }
+    
+    // 檢查租借者欄位
     for (let i = 0; i < persons.length; i++) {
-      const p = persons[i];
-      for (const key in initialPerson) {
-        if (!p[key as keyof typeof initialPerson]) return `第${i + 1}位租借者有未填欄位`;
+      const missing = getMissingFields(persons[i]);
+      if (missing.length > 0) {
+        return `第${i + 1}位租借者缺少：${missing.join('、')}`;
       }
     }
     return '';
@@ -1125,9 +1136,15 @@ const Reservation: React.FC = () => {
                 type="button"
                 className="btn-primary ml-auto"
                 onClick={() => {
-                  console.log('persons', persons);
-                  const err = validate();
-                  if (err) { setError(err); return; }
+                  // 檢查所有租借者的欄位
+                  for (let i = 0; i < persons.length; i++) {
+                    const missing = getMissingFields(persons[i]);
+                    if (missing.length > 0) {
+                      setError(`第${i + 1}位租借者缺少：${missing.join('、')}`);
+                      return;
+                    }
+                  }
+                  setError('');
                   calcPrice();
                   setStep(4);
                 }}
