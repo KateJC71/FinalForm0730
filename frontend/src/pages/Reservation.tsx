@@ -288,6 +288,10 @@ const Reservation: React.FC = () => {
     discountValue: number;
     name?: string;
   } | null>(null);
+  
+  // 載入狀態管理
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isValidatingDiscount, setIsValidatingDiscount] = useState(false);
 
   // 初始化時從 localStorage 恢復數據
   useEffect(() => {
@@ -409,8 +413,12 @@ const Reservation: React.FC = () => {
       setDiscountStatus(null);
       setDiscountAmount(0);
       setDiscountInfo(null);
+      setIsValidatingDiscount(false);
       return;
     }
+    
+    setIsValidatingDiscount(true);
+    setDiscountStatus(null);
     
     const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
     
@@ -451,6 +459,8 @@ const Reservation: React.FC = () => {
       });
       setDiscountAmount(0);
       setDiscountInfo(null);
+    } finally {
+      setIsValidatingDiscount(false);
     }
   };
 
@@ -747,6 +757,8 @@ const Reservation: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setIsSubmitting(true);
+    
     try {
       const payload = {
         applicant,
@@ -768,6 +780,8 @@ const Reservation: React.FC = () => {
       setStep(5);
     } catch (err) {
       setError('送出失敗，請稍後再試');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -958,16 +972,24 @@ const Reservation: React.FC = () => {
               </div>
               <input className="input" placeholder="住宿飯店名稱或地址" value={applicant.hotel} onChange={e => setApplicant({ ...applicant, hotel: e.target.value })} required />
               <div>
-                <input 
-                  className="input" 
-                  placeholder="教練合作折扣碼 (選填)" 
-                  value={applicant.discountCode} 
-                  onChange={e => {
-                    setApplicant({ ...applicant, discountCode: e.target.value });
-                    // 當用戶輸入時自動驗證
-                    validateDiscountCode(e.target.value);
-                  }} 
-                />
+                <div className="relative">
+                  <input 
+                    className="input pr-10" 
+                    placeholder="教練合作折扣碼 (選填)" 
+                    value={applicant.discountCode} 
+                    disabled={isValidatingDiscount}
+                    onChange={e => {
+                      setApplicant({ ...applicant, discountCode: e.target.value });
+                      // 當用戶輸入時自動驗證
+                      validateDiscountCode(e.target.value);
+                    }} 
+                  />
+                  {isValidatingDiscount && (
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-600"></div>
+                    </div>
+                  )}
+                </div>
                 {discountStatus && (
                   <div className={`mt-2 p-2 rounded text-sm ${
                     discountStatus.type === 'success' 
@@ -1302,7 +1324,14 @@ const Reservation: React.FC = () => {
           {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">{error}</div>}
           <div className="flex justify-between">
             {step > 1 && step < 5 && (
-              <button type="button" className="btn-secondary" onClick={handlePrev}>上一步</button>
+              <button 
+                type="button" 
+                className="btn-secondary" 
+                onClick={handlePrev}
+                disabled={isSubmitting}
+              >
+                上一步
+              </button>
             )}
             {step < 3 && (
               <button type="button" className="btn-primary ml-auto" onClick={handleNextStep}>下一步</button>
@@ -1329,7 +1358,16 @@ const Reservation: React.FC = () => {
               </button>
             )}
             {step === 4 && (
-              <button type="submit" className="btn-primary ml-auto">確認送出</button>
+              <button 
+                type="submit" 
+                className="btn-primary ml-auto flex items-center gap-2" 
+                disabled={isSubmitting}
+              >
+                {isSubmitting && (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                )}
+                {isSubmitting ? '處理中...' : '確認送出'}
+              </button>
             )}
           </div>
         </form>
