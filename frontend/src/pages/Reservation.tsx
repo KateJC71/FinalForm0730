@@ -176,6 +176,37 @@ function getPriceIndex(days: number) {
   return 4; // 5天以上先用5天價，追加天數另外加
 }
 
+// 檢查第1步未填欄位
+function getMissingStep1Fields(data: {
+  startDate: string;
+  endDate: string;
+  rentStore: string;
+  returnStore: string;
+  pickupDate: string;
+  pickupTime: string;
+}) {
+  const missing = [];
+  if (!data.startDate) missing.push('開始日期');
+  if (!data.endDate) missing.push('結束日期');
+  if (!data.rentStore) missing.push('租借地點');
+  if (!data.returnStore) missing.push('歸還地點');
+  if (!data.pickupDate) missing.push('取件日期');
+  if (!data.pickupTime) missing.push('取件時間');
+  return missing;
+}
+
+// 檢查申請人未填欄位
+function getMissingApplicantFields(applicant: any) {
+  const missing = [];
+  if (!applicant.name) missing.push('姓名');
+  if (!applicant.phone) missing.push('電話');
+  if (!applicant.email) missing.push('Email');
+  if (!applicant.messenger) missing.push('通訊軟體');
+  if (!applicant.messengerId) missing.push('通訊軟體ID');
+  if (!applicant.hotel) missing.push('住宿飯店');
+  return missing;
+}
+
 // 檢查未填欄位，回傳未填欄位名稱陣列
 function getMissingFields(person: any) {
   const requiredFields = [
@@ -516,32 +547,32 @@ const Reservation: React.FC = () => {
     setError('');
     if (step === 1) {
       // 第一步檢查日期、地點和取件資訊
-      if (!startDate || !endDate) {
-        setError('請選擇完整日期');
+      const missingFields = getMissingStep1Fields({
+        startDate,
+        endDate,
+        rentStore,
+        returnStore,
+        pickupDate,
+        pickupTime
+      });
+      
+      if (missingFields.length > 0) {
+        setError(`請填寫以下欄位：${missingFields.join('、')}`);
         return;
       }
-      // 允許同一天，不再檢查 endDate > startDate
-      if (!rentStore || !returnStore) {
-        setError('請選擇租借地點與歸還地點');
-        return;
-      }
-      if (!pickupDate || !pickupTime) {
-        setError('請選擇取件日期和時間');
-        return;
-      }
+      
       setStep(step + 1);
       return;
     }
     if (step === 2) {
-      // debug: 輸出每個欄位的 key 與值
-      console.log('申請人資料驗證：');
-      Object.entries(applicant).forEach(([k, v]) => {
-        console.log(`${k}:`, v);
-      });
-      if (!applicant.name || !applicant.phone || !applicant.email || !applicant.messenger || !applicant.messengerId || !applicant.hotel) {
-        setError('請完整填寫申請人資料');
+      // 檢查申請人資料
+      const missingFields = getMissingApplicantFields(applicant);
+      
+      if (missingFields.length > 0) {
+        setError(`申請人資料缺少：${missingFields.join('、')}`);
         return;
       }
+      
       // shuttleMode 不需驗證 shuttle 細項
       setStep(step + 1);
       return;
@@ -552,7 +583,7 @@ const Reservation: React.FC = () => {
       console.log(`第${i + 1}位租借者`, persons[i]);
       console.log(`缺漏欄位`, missing);
       if (missing.length > 0) {
-        setError(`第${i + 1}位租借者「${missing.join('、')}」未填`);
+        setError(`第${i + 1}位租借者缺少：${missing.join('、')}`);
         return;
       }
     }
