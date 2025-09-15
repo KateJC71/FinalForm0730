@@ -1,7 +1,6 @@
 import sqlite3 from 'sqlite3';
 import path from 'path';
 import fs from 'fs';
-import { runMigrations } from './runMigrations';
 
 const dbPath = path.join(__dirname, '../../data/snow_reservation.db');
 
@@ -282,7 +281,7 @@ async function initDatabase() {
         }
         console.log('✅ 示例雪具數據插入成功');
         
-        // 插入折扣碼 - 只更新有效期，保持原折扣值
+        // 插入折扣碼 - 更新為新的折扣碼結構
         db.run(`
           INSERT OR REPLACE INTO discount_codes (code, name, discount_type, discount_value, valid_from, valid_until, active) VALUES
           ('EarlyBird2526', '早鳥優惠 2025-2026', 'percentage', 20, '2025-08-01', '2025-09-15', 1),
@@ -290,9 +289,12 @@ async function initDatabase() {
           ('EarlySSW26', '早鳥優惠 SSW', 'percentage', 20, '2025-08-01', '2025-09-15', 1),
           ('EarlySL26', '早鳥優惠 SL', 'percentage', 20, '2025-08-01', '2025-09-15', 1),
           ('EarlyComma26', '早鳥優惠 Comma', 'percentage', 20, '2025-08-01', '2025-09-15', 1),
-          ('SnowPink2526', 'Snow Pink 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1),
-          ('SSW2526', 'SSW 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1),
-          ('SFS2526', 'SFS 專屬優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1)
+          ('Pink26', 'Pink 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1),
+          ('SSW26', 'SSW 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1),
+          ('SFS2526', 'SFS 專屬優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1),
+          ('Yeti26', 'Yeti 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1),
+          ('Comma26', 'Comma 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1),
+          ('JAW26', 'JAW 合作優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1)
         `, (err) => {
           if (err) {
             console.error('❌ 插入折扣碼失敗:', err);
@@ -301,22 +303,12 @@ async function initDatabase() {
             console.log('✅ 折扣碼插入成功');
             
             // 驗證插入結果
-            db.get('SELECT COUNT(*) as count FROM discount_codes', [], async (err, row: any) => {
+            db.get('SELECT COUNT(*) as count FROM discount_codes', [], (err, row: any) => {
               if (err) {
                 console.error('❌ 驗證折扣碼失敗:', err);
               } else {
                 console.log(`📊 折扣碼表格共有 ${row.count} 筆記錄`);
               }
-              
-              // Run migrations after initial setup
-              try {
-                console.log('🔄 Running database migrations...');
-                await runMigrations(dbPath);
-                console.log('✅ Migrations completed');
-              } catch (migrationError) {
-                console.error('❌ Migration failed:', migrationError);
-              }
-              
               resolve();
             });
           }
