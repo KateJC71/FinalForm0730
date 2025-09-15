@@ -14,8 +14,9 @@ const Database = require('sqlite3').Database;
 const path = require('path');
 
 function runMigration() {
-  const dbPath = path.join(__dirname, '../data/snow_reservation.db');
-  const db = new Database(dbPath);
+  return new Promise((resolve, reject) => {
+    const dbPath = path.join(__dirname, '../data/snow_reservation.db');
+    const db = new Database(dbPath);
   
   console.log('Running discount code migration...\n');
   
@@ -72,6 +73,7 @@ function runMigration() {
             });
           }
           db.close();
+          resolve();
         }
       );
       return;
@@ -93,6 +95,7 @@ function runMigration() {
   }
   
   runNext(0);
+  });
 }
 
 // Run the migration

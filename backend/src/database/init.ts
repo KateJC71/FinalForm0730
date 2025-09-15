@@ -1,10 +1,11 @@
 import sqlite3 from 'sqlite3';
 import path from 'path';
+import fs from 'fs';
+import { runMigrations } from './runMigrations';
 
 const dbPath = path.join(__dirname, '../../data/snow_reservation.db');
 
 // 確保資料目錄存在
-import fs from 'fs';
 const dataDir = path.dirname(dbPath);
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
@@ -300,12 +301,22 @@ async function initDatabase() {
             console.log('✅ 折扣碼插入成功');
             
             // 驗證插入結果
-            db.get('SELECT COUNT(*) as count FROM discount_codes', [], (err, row: any) => {
+            db.get('SELECT COUNT(*) as count FROM discount_codes', [], async (err, row: any) => {
               if (err) {
                 console.error('❌ 驗證折扣碼失敗:', err);
               } else {
                 console.log(`📊 折扣碼表格共有 ${row.count} 筆記錄`);
               }
+              
+              // Run migrations after initial setup
+              try {
+                console.log('🔄 Running database migrations...');
+                await runMigrations(dbPath);
+                console.log('✅ Migrations completed');
+              } catch (migrationError) {
+                console.error('❌ Migration failed:', migrationError);
+              }
+              
               resolve();
             });
           }
