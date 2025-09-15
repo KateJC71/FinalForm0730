@@ -34,7 +34,7 @@ router.post('/update-discount-codes', (req: Request, res: Response) => {
       ('EarlyComma26', '早鳥優惠 Comma', 'percentage', 20, '2025-08-01', '2025-09-15', 1, NULL, 0),
       ('Pink26', 'Pink 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1, NULL, 0),
       ('SSW26', 'SSW 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1, NULL, 0),
-      ('SFS2526', 'SFS 專屬優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1, NULL, 0),
+      ('SFS2526', 'SFS 專屬優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1, NULL, 0),
       ('Yeti26', 'Yeti 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1, NULL, 0),
       ('Comma26', 'Comma 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1, NULL, 0),
       ('JAW26', 'JAW 合作優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1, NULL, 0)
