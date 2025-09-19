@@ -35,9 +35,9 @@ router.post('/update-discount-codes', (req: Request, res: Response) => {
       ('Pink26', 'Pink 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1, NULL, 0),
       ('SSW26', 'SSW 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1, NULL, 0),
       ('SFS2526', 'SFS 專屬優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1, NULL, 0),
-      ('Yeti26', 'Yeti 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1, NULL, 0),
+      ('Aobi26', 'Aobi 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1, NULL, 0),
       ('Comma26', 'Comma 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1, NULL, 0),
-      ('JAW26', 'JAW 合作優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1, NULL, 0)
+      ('JWA26', 'JWA 合作優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1, NULL, 0)
     `;
     
     db.run(updateSql, function(err) {
