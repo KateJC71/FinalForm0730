@@ -294,7 +294,10 @@ async function initDatabase() {
           ('SFS2526', 'SFS 專屬優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1),
           ('Aobi26', 'Aobi 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1),
           ('Comma26', 'Comma 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1),
-          ('JWA26', 'JWA 合作優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1)
+          ('JWA26', 'JWA 合作優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1),
+          ('ohboards2526', 'OhBoards 合作優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1),
+          ('SF05', 'SnowForce 5% 優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1),
+          ('SF10', 'SnowForce 10% 優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1)
         `, (err) => {
           if (err) {
             console.error('❌ 插入折扣碼失敗:', err);
