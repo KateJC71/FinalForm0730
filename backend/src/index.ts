@@ -37,8 +37,11 @@ const allowedOrigins = [
   'http://localhost:5174',
   'http://localhost:5175',
   'http://localhost:5176',
+  'http://localhost:3001',
   'https://final-form0730-frontend.vercel.app',
-  'https://reservation.furano-snowforce.com'
+  'https://reservation.furano-snowforce.com',
+  'https://www.dev-snowy.fun',
+  'https://www.snowy.fun'
 ];
 
 if (process.env.FRONTEND_URL) {
