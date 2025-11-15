@@ -40,7 +40,8 @@ router.post('/update-discount-codes', (req: Request, res: Response) => {
       ('JWA26', 'JWA 合作優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1, NULL, 0),
       ('ohboards2526', 'OhBoards 合作優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1, NULL, 0),
       ('SF05', 'SnowForce 5% 優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1, NULL, 0),
-      ('SF10', 'SnowForce 10% 優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1, NULL, 0)
+      ('SF10', 'SnowForce 10% 優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1, NULL, 0),
+      ('Snowy2526', 'Snowy 合作優惠 2025-2026', 'percentage', 5, '2025-11-15', '2026-05-31', 1, NULL, 0)
     `;
     
     db.run(updateSql, function(err) {
