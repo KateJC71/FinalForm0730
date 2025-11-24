@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Mail } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { submitReservation } from '../services/api';
-import LanguageSwitcher from '../components/LanguageSwitcher';
 
 const initialPerson = {
   name: '',
@@ -911,16 +910,6 @@ const Reservation: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto py-8">
-      {/* 右上角語言切換器 */}
-      <div className="flex justify-end mb-4">
-        <LanguageSwitcher variant="small" />
-      </div>
-
-      {/* 第一頁中間的大型語言切換器 */}
-      {step === 1 && (
-        <LanguageSwitcher variant="large" />
-      )}
-
       <h1 className="text-3xl font-bold text-snow-900 mb-8 text-center">{t('reservation.title')}</h1>
       <div className="card">
         <form className="space-y-6" onSubmit={handleSubmit}>

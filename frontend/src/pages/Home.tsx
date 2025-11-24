@@ -1,24 +1,32 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 const Home: React.FC = () => {
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div className="space-y-12">
       {/* Hero Section */}
       <section className="relative text-center py-16 bg-gradient-to-b from-blue-50 to-white">
+        {/* Language Switcher Banner */}
+        <div className="bg-primary-600 py-3 mb-8 -mt-16 mx-4 rounded-lg">
+          <LanguageSwitcher variant="large" />
+        </div>
+
         {/* 背景圖片（如果您有的話，放在public目錄） */}
         {/* <div className="absolute inset-0 opacity-20">
           <img src="/hero-background.jpg" alt="" className="w-full h-full object-cover" />
         </div> */}
-        
+
         <div className="relative max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold text-snow-900 mb-6">
-            歡迎來到<br/>Snow Force雪具預約系統
+            {t('home.title')}
           </h1>
           <p className="text-xl text-snow-600 mb-8 max-w-2xl mx-auto">
-            請先詳閱下列說明再進行預約! 趕快來一起感受Bochi Powder的魅力!
+            {t('home.subtitle')}
           </p>
           
           {/* 主要圖片區域 */}
@@ -31,7 +39,7 @@ const Home: React.FC = () => {
           <div className="max-w-4xl mx-auto mb-8">
             <div className="bg-white border-2 border-gray-300 rounded-lg p-6 shadow-lg">
               <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
-                租借條款與注意事項
+                {t('home.termsTitle')}
               </h3>
               <div className="bg-gray-50 border rounded-lg p-4 max-h-96 overflow-y-auto text-left text-sm text-gray-700 leading-relaxed space-y-3">
                 <p><strong>請仔細閱讀以下營業資訊與服務條款：</strong></p>
@@ -304,24 +312,24 @@ const Home: React.FC = () => {
                     className="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                   />
                   <span className="ml-3 text-sm font-medium text-gray-700">
-                    我已詳細閱讀並同意以上條款與注意事項
+                    {t('home.agreeTerms')}
                   </span>
                 </label>
               </div>
             </div>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {isTermsAccepted ? (
               <Link to="/reservation" className="btn-primary text-lg px-8 py-3">
-                立即預約
+                {t('home.reserveNow')}
               </Link>
             ) : (
-              <button 
-                disabled 
+              <button
+                disabled
                 className="text-lg px-8 py-3 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed"
               >
-                請先同意條款才能預約
+                {t('home.pleaseAgree')}
               </button>
             )}
           </div>

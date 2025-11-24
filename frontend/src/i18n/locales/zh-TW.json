@@ -1,4 +1,15 @@
 {
+  "header": {
+    "home": "首頁"
+  },
+  "home": {
+    "title": "Gear It Right, Shred It Right",
+    "subtitle": "請先詳閱下列說明再進行預約！趕快來一起感受Bochi Powder的魅力！",
+    "termsTitle": "租借條款與注意事項",
+    "agreeTerms": "我已詳細閱讀並同意以上條款與注意事項",
+    "reserveNow": "立即預約",
+    "pleaseAgree": "請先同意條款才能預約"
+  },
   "common": {
     "next": "下一步",
     "previous": "上一步",

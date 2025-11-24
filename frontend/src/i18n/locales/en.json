@@ -1,4 +1,15 @@
 {
+  "header": {
+    "home": "Home"
+  },
+  "home": {
+    "title": "Gear It Right, Shred It Right",
+    "subtitle": "Please read the following information before making a reservation! Come and experience the charm of Bochi Powder!",
+    "termsTitle": "Rental Terms and Conditions",
+    "agreeTerms": "I have read and agree to the terms and conditions above",
+    "reserveNow": "Reserve Now",
+    "pleaseAgree": "Please agree to the terms first"
+  },
   "common": {
     "next": "Next",
     "previous": "Previous",
