@@ -17,6 +17,7 @@ const initialPerson = {
   clothingType: '',
   helmetOnly: '',
   fastWear: '',
+  protectiveGear: '',
 };
 
 const levels = ['初學者', '經驗者', '黑線順滑'];
@@ -25,6 +26,7 @@ const boardTypes = ['一般標準板', '進階板(紅線順滑)', '粉雪板(全
 const equipTypes = ['大全配 (板+靴+雪衣&雪褲+安全帽)', '板+靴', '僅租雪板'];
 const clothingTypes = ['單租雪衣', '單租雪褲', '租一整套(雪衣及雪褲)', '否'];
 const yesNo = ['是', '否'];
+const protectiveGearOptions = ['否', '護具全配 (護腕+護膝+護臀)', '護腕', '護膝', '護臀'];
 const storeOptions = ['富良野店', '旭川店'];
 
 // 獲取12/1開始的最小日期
@@ -120,6 +122,12 @@ interface PriceTable {
   helmet: number[];
   pole: number[];
   fase: number[];
+  protectiveGear: {
+    fullSet: number[];
+    wrist: number[];
+    knee: number[];
+    hip: number[];
+  };
   crossReturn: number;
 }
 
@@ -157,6 +165,12 @@ const priceTable: PriceTable = {
   helmet: [1500, 2500, 3500, 4000, 4500, 500],
   pole: [500, 1000, 1200, 1400, 1900, 100],
   fase: [2000, 2000, 2000, 2000, 2000, 2000],
+  protectiveGear: {
+    fullSet: [2000, 4000, 5000, 6000, 7000, 1000],
+    wrist: [500, 1000, 1300, 1600, 1900, 300],
+    knee: [800, 1600, 2100, 2600, 3100, 500],
+    hip: [1000, 2000, 2800, 3600, 4200, 800],
+  },
   crossReturn: 3000,
 };
 
@@ -227,6 +241,7 @@ function getMissingFields(person: any) {
     requiredFields.push({ key: 'helmetOnly', label: '單租安全帽' });
   }
   requiredFields.push({ key: 'fastWear', label: '是否升級Fase快穿裝備' });
+  requiredFields.push({ key: 'protectiveGear', label: '護具租借' });
 
   // 新增 debug 輸出
   requiredFields.forEach(f => {
@@ -548,8 +563,31 @@ const Reservation: React.FC = () => {
           personTotal += fase;
           items.push({ label: 'Fase快穿', price: fase });
         }
+
+        // 計算護具
+        if (p.protectiveGear && p.protectiveGear !== '否') {
+          let gearPrice = 0;
+          let gearLabel = '';
+          if (p.protectiveGear.includes('護具全配')) {
+            gearPrice = priceTable.protectiveGear.fullSet[priceIdx] + (extraDays > 0 ? priceTable.protectiveGear.fullSet[5] * extraDays : 0);
+            gearLabel = '護具全配';
+          } else if (p.protectiveGear === '護腕') {
+            gearPrice = priceTable.protectiveGear.wrist[priceIdx] + (extraDays > 0 ? priceTable.protectiveGear.wrist[5] * extraDays : 0);
+            gearLabel = '護腕';
+          } else if (p.protectiveGear === '護膝') {
+            gearPrice = priceTable.protectiveGear.knee[priceIdx] + (extraDays > 0 ? priceTable.protectiveGear.knee[5] * extraDays : 0);
+            gearLabel = '護膝';
+          } else if (p.protectiveGear === '護臀') {
+            gearPrice = priceTable.protectiveGear.hip[priceIdx] + (extraDays > 0 ? priceTable.protectiveGear.hip[5] * extraDays : 0);
+            gearLabel = '護臀';
+          }
+          if (gearPrice > 0) {
+            personTotal += gearPrice;
+            items.push({ label: gearLabel, price: gearPrice });
+          }
+        }
       }
-      
+
       details.push({
         index: idx + 1,
         items,
@@ -632,15 +670,28 @@ const Reservation: React.FC = () => {
         // Fase快穿是每天2000元
         fase = 2000 * days;
       }
+      // 護具
+      let protective = 0;
+      if (p.protectiveGear && p.protectiveGear !== '否') {
+        if (p.protectiveGear.includes('護具全配')) {
+          protective = priceTable.protectiveGear.fullSet[priceIdx] + (extraDays > 0 ? priceTable.protectiveGear.fullSet[5] * extraDays : 0);
+        } else if (p.protectiveGear === '護腕') {
+          protective = priceTable.protectiveGear.wrist[priceIdx] + (extraDays > 0 ? priceTable.protectiveGear.wrist[5] * extraDays : 0);
+        } else if (p.protectiveGear === '護膝') {
+          protective = priceTable.protectiveGear.knee[priceIdx] + (extraDays > 0 ? priceTable.protectiveGear.knee[5] * extraDays : 0);
+        } else if (p.protectiveGear === '護臀') {
+          protective = priceTable.protectiveGear.hip[priceIdx] + (extraDays > 0 ? priceTable.protectiveGear.hip[5] * extraDays : 0);
+        }
+      }
       // 甲地租乙地還
       let cross = 0;
       if (isCrossStore) cross = 3000;
-      const subtotal = main + boots + clothing + helmet + fase + cross;
+      const subtotal = main + boots + clothing + helmet + fase + protective + cross;
       total += subtotal;
       detailList.push({
         idx: idx + 1,
         group: isChild ? '兒童' : '成人',
-        main, boots, clothing, helmet, fase, cross, subtotal,
+        main, boots, clothing, helmet, fase, protective, cross, subtotal,
         ...p,
       });
     });
@@ -1205,6 +1256,10 @@ const Reservation: React.FC = () => {
                       <option value="">是否升級Fase快穿裝備</option>
                       {yesNo.map(t => <option key={t} value={t}>{t}</option>)}
                     </select>
+                    <select className="input" value={p.protectiveGear} onChange={e => handlePersonChange(idx, 'protectiveGear', e.target.value)} required>
+                      <option value="">護具租借</option>
+                      {protectiveGearOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
                   </div>
                 </div>
               ))}
@@ -1273,6 +1328,7 @@ const Reservation: React.FC = () => {
                         </>
                       )}
                       <div>是否升級Fase快穿裝備：{p.fastWear}</div>
+                      <div>護具租借：{p.protectiveGear}</div>
                       {/* 價格內訳 */}
                       <div className="col-span-2 mt-2">
                         <div className="font-semibold">費用明細：</div>
@@ -1288,6 +1344,7 @@ const Reservation: React.FC = () => {
                               {clothingLabel && <li>{clothingLabel} {days}天：¥ {p.clothing}</li>}
                               {helmetLabel && <li>{helmetLabel} {days}天：¥ {p.helmet}</li>}
                               {faseLabel && <li>{faseLabel} {days}天：¥ {p.fase}</li>}
+                              {p.protective > 0 && <li>{p.protectiveGear} {days}天：¥ {p.protective}</li>}
                               {p.cross > 0 && <li>甲地租乙地還：¥ {p.cross}</li>}
                             </>;
                           })()}

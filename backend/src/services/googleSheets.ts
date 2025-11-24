@@ -14,6 +14,7 @@ interface RenterData {
   clothingOption: string;
   helmet: boolean;
   fase: boolean;
+  protectiveGear: string;
   prices: {
     mainEquipment: number;
     boots: number;
@@ -176,7 +177,8 @@ class GoogleSheetsService {
         equipmentType: person.equipType || '大全配',
         clothingOption: person.clothingType || '否',
         helmet: person.helmetOnly || '',    // 直接傳送前端選擇的值
-        fase: person.fastWear || ''         // 直接傳送前端選擇的值
+        fase: person.fastWear || '',        // 直接傳送前端選擇的值
+        protectiveGear: person.protectiveGear || '否'  // 護具選項
       };
       
       renters.push(renter);
