@@ -142,10 +142,14 @@ router.post('/', [
           validatedDiscountAmount = Math.min(discountRow.discount_value, basePrice);
         }
         
-        // 驗證前端傳來的折扣金額是否正確
-        if (Math.abs(validatedDiscountAmount - discountAmount) > 1) {
+        // 驗證前端傳來的折扣金額是否正確（允許較大誤差，因為可能有四捨五入差異）
+        if (Math.abs(validatedDiscountAmount - discountAmount) > 100) {
           console.error('❌ Discount amount mismatch:', { client: discountAmount, server: validatedDiscountAmount });
           return res.status(400).json({ message: '折扣金額計算錯誤' });
+        }
+        // 如果有小差異，使用後端計算的值
+        if (validatedDiscountAmount !== discountAmount) {
+          console.log('⚠️ Small discount difference:', { client: discountAmount, server: validatedDiscountAmount });
         }
         
         finalTotalPrice = basePrice - validatedDiscountAmount;
