@@ -15,7 +15,7 @@ const Header: React.FC = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2">
               <img src="/logo.png" alt="Logo" className="h-8 w-8 object-contain" />
-              <span className="text-xl font-bold text-snow-900">Snow Force Gear Rental</span>
+              <span className="text-xl font-bold text-snow-900">{t('header.logo')}</span>
             </Link>
           </div>
           <nav className="flex items-center space-x-4">
