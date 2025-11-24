@@ -11,8 +11,8 @@ const Home: React.FC = () => {
     <div className="space-y-12">
       {/* Hero Section */}
       <section className="relative text-center py-16 bg-gradient-to-b from-blue-50 to-white">
-        {/* Language Switcher Banner */}
-        <div className="bg-primary-600 py-3 mb-8 -mt-16 mx-4 rounded-lg">
+        {/* Language Switcher */}
+        <div className="mb-6">
           <LanguageSwitcher variant="large" />
         </div>
 
