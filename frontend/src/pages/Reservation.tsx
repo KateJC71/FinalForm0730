@@ -964,7 +964,7 @@ const Reservation: React.FC = () => {
                 <label className="block mb-1">{t('reservation.step1.returnLocation')}</label>
                 <select className="input" value={returnStore} onChange={e => setReturnStore(e.target.value)} required>
                   <option value="" disabled style={{ color: '#aaa' }}>{t('reservation.step1.selectReturnLocation')}</option>
-                  {storeOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                  {storeOptions.map(opt => <option key={opt} value={opt}>{i18n.language === 'en' ? t(`options.stores.${opt === '富良野店' ? 'furano' : 'asahikawa'}`) : opt}</option>)}
                 </select>
               </div>
               
@@ -1006,39 +1006,39 @@ const Reservation: React.FC = () => {
                   </div>
                 </div>
                 <div className="mt-3 text-sm text-blue-600">
-                  <p>💡 <strong>提醒：</strong></p>
+                  <p>💡 <strong>{t('reservation.step1.pickupReminder')}</strong></p>
                   <ul className="list-disc list-inside ml-4 space-y-1">
-                    <li>取件日期只能選擇開始日當天或前一天下午14:00以後(不另外加價)</li>
-                    <li>富良野店營業時間：08:00-17:30（最後取件17:30）</li>
-                    <li>旭川店營業時間：07:30-18:30（最後取件18:30）</li>
-                    <li>8:00-12:00為尖峰時段，預約客戶優先</li>
+                    <li>{t('reservation.step1.pickupNote1')}</li>
+                    <li>{t('reservation.step1.pickupNote2')}</li>
+                    <li>{t('reservation.step1.pickupNote3')}</li>
+                    <li>{t('reservation.step1.pickupNote4')}</li>
                   </ul>
                 </div>
-                
+
                 <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
-                  <h4 className="font-semibold text-yellow-800 mb-2">📋 退款與改期政策（以取件日為基準）</h4>
-                  
+                  <h4 className="font-semibold text-yellow-800 mb-2">📋 {t('reservation.policy.title')}</h4>
+
                   <div className="mb-3">
-                    <p className="font-medium text-yellow-700 mb-1">退款規則</p>
+                    <p className="font-medium text-yellow-700 mb-1">{t('reservation.policy.refundRules')}</p>
                     <ul className="list-disc list-inside ml-4 space-y-1 text-yellow-700">
-                      <li><strong>取件日前 14 天（不含當日）以前取消</strong> → 退還扣除刷卡手續費（4%）後的全額</li>
-                      <li><strong>取件日前 7～13 天取消</strong> → 退還已付款項的 50%</li>
-                      <li><strong>取件日前 4～6 天取消</strong> → 退還已付款項的 20%</li>
-                      <li><strong>取件日前 3 天（含當日）取消</strong> → 恕不退款</li>
+                      <li><strong>{t('reservation.policy.refund14Days')}</strong> → {t('reservation.policy.refund14DaysResult')}</li>
+                      <li><strong>{t('reservation.policy.refund7to13Days')}</strong> → {t('reservation.policy.refund7to13DaysResult')}</li>
+                      <li><strong>{t('reservation.policy.refund4to6Days')}</strong> → {t('reservation.policy.refund4to6DaysResult')}</li>
+                      <li><strong>{t('reservation.policy.refund3Days')}</strong> → {t('reservation.policy.refund3DaysResult')}</li>
                     </ul>
                   </div>
-                  
+
                   <div className="mb-3">
-                    <p className="font-medium text-yellow-700 mb-1">改期與變更規則</p>
+                    <p className="font-medium text-yellow-700 mb-1">{t('reservation.policy.changeRules')}</p>
                     <ul className="list-disc list-inside ml-4 space-y-1 text-yellow-700">
-                      <li><strong>更改取件日期：</strong>最晚需在取件日前 3 天（不含當日）辦理，且僅可更改一次</li>
-                      <li><strong>更改租借天數或部分人數取消</strong> → 視同整筆訂單取消，需重新預約</li>
+                      <li><strong>{t('reservation.policy.changeDate')}</strong>{t('reservation.policy.changeDateNote')}</li>
+                      <li><strong>{t('reservation.policy.changeDaysOrCancel')}</strong> → {t('reservation.policy.changeDaysOrCancelNote')}</li>
                     </ul>
                   </div>
-                  
+
                   <div className="text-xs text-yellow-600 border-t border-yellow-200 pt-2 mt-2">
-                    <p>💡 <strong>天數計算方式：</strong>以取件日為第 0 天，往前一天為第 1 天，再依此類推</p>
-                    <p>💳 <strong>付款方式：</strong>日圓／僅接受信用卡付款</p>
+                    <p>💡 <strong>{t('reservation.policy.calculationMethod')}</strong>{t('reservation.policy.calculationNote')}</p>
+                    <p>💳 <strong>{t('reservation.policy.paymentMethod')}</strong>{t('reservation.policy.paymentNote')}</p>
                   </div>
                 </div>
               </div>
@@ -1046,28 +1046,28 @@ const Reservation: React.FC = () => {
           )}
           {step === 2 && (
             <div className="space-y-4">
-              <input className="input" placeholder="申請人姓名" value={applicant.name} onChange={e => setApplicant({ ...applicant, name: e.target.value })} required />
+              <input className="input" placeholder={t('reservation.step2.name')} value={applicant.name} onChange={e => setApplicant({ ...applicant, name: e.target.value })} required />
               <div className="flex gap-2">
                 <select className="input w-28" value={applicant.countryCode} onChange={e => setApplicant({ ...applicant, countryCode: e.target.value })}>
                   {countryCodes.map(opt => <option key={opt.code} value={opt.code}>{opt.label}</option>)}
                 </select>
-                <input className="input flex-1" placeholder="電話" value={applicant.phone} onChange={e => setApplicant({ ...applicant, phone: e.target.value })} required />
+                <input className="input flex-1" placeholder={t('reservation.step2.phone')} value={applicant.phone} onChange={e => setApplicant({ ...applicant, phone: e.target.value })} required />
               </div>
-              <input className="input" placeholder="Email" type="email" value={applicant.email} onChange={e => setApplicant({ ...applicant, email: e.target.value })} required />
+              <input className="input" placeholder={t('reservation.step2.email')} type="email" value={applicant.email} onChange={e => setApplicant({ ...applicant, email: e.target.value })} required />
               <div className="flex gap-2">
                 <select className="input w-32" value={applicant.messenger} onChange={e => setApplicant({ ...applicant, messenger: e.target.value })} required>
-                  <option value="">通訊軟體</option>
+                  <option value="">{t('reservation.step2.messenger')}</option>
                   {messengerTypes.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
-                <input className="input flex-1" placeholder="通訊軟體ID" value={applicant.messengerId} onChange={e => setApplicant({ ...applicant, messengerId: e.target.value })} required />
+                <input className="input flex-1" placeholder={t('reservation.step2.messengerId')} value={applicant.messengerId} onChange={e => setApplicant({ ...applicant, messengerId: e.target.value })} required />
               </div>
-              <input className="input" placeholder="住宿飯店名稱或地址" value={applicant.hotel} onChange={e => setApplicant({ ...applicant, hotel: e.target.value })} required />
+              <input className="input" placeholder={t('reservation.step2.hotel')} value={applicant.hotel} onChange={e => setApplicant({ ...applicant, hotel: e.target.value })} required />
               <div>
                 <div className="relative">
-                  <input 
-                    className="input pr-10" 
-                    placeholder="教練合作折扣碼 (選填)" 
-                    value={applicant.discountCode} 
+                  <input
+                    className="input pr-10"
+                    placeholder={t('reservation.step2.discountCode')}
+                    value={applicant.discountCode}
                     disabled={isValidatingDiscount}
                     onChange={e => {
                       setApplicant({ ...applicant, discountCode: e.target.value });
@@ -1092,7 +1092,7 @@ const Reservation: React.FC = () => {
                 )}
               </div>
               <div>
-                <label className="block mb-1">是否需要接送</label>
+                <label className="block mb-1">{t('reservation.step2.shuttleService')}</label>
                 <div className="flex gap-4 mb-2">
                   <label className="flex items-center gap-1">
                     <input
@@ -1100,7 +1100,7 @@ const Reservation: React.FC = () => {
                       checked={applicant.shuttleMode === 'none'}
                       onChange={() => setApplicant({ ...applicant, shuttleMode: 'none', shuttle: [] })}
                     />
-                    不須接送
+                    {t('reservation.step2.noShuttle')}
                   </label>
                   <label className="flex items-center gap-1">
                     <input
@@ -1108,14 +1108,14 @@ const Reservation: React.FC = () => {
                       checked={applicant.shuttleMode === 'need'}
                       onChange={() => setApplicant({ ...applicant, shuttleMode: 'need', shuttle: [] })}
                     />
-                    需要接送
+                    {t('reservation.step2.needShuttle')}
                   </label>
                 </div>
                 {applicant.shuttleMode === 'need' && (
                   <>
                     <div className="flex flex-wrap gap-2 mb-2">
-                      <span className="font-semibold">接：</span>
-                      {shuttlePickOptions.map(opt => (
+                      <span className="font-semibold">{t('reservation.step2.pickup')}</span>
+                      {shuttlePickOptions.map((opt, idx) => (
                         <label key={opt} className="flex items-center gap-1">
                           <input
                             type="checkbox"
@@ -1127,13 +1127,13 @@ const Reservation: React.FC = () => {
                               setApplicant({ ...applicant, shuttle: newShuttle });
                             }}
                           />
-                          {opt}
+                          {i18n.language === 'en' ? t(`reservation.step2.shuttlePickup${idx + 1}`) : opt}
                         </label>
                       ))}
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      <span className="font-semibold">送：</span>
-                      {shuttleDropOptions.map(opt => (
+                      <span className="font-semibold">{t('reservation.step2.dropoff')}</span>
+                      {shuttleDropOptions.map((opt, idx) => (
                         <label key={opt} className="flex items-center gap-1">
                           <input
                             type="checkbox"
@@ -1145,7 +1145,7 @@ const Reservation: React.FC = () => {
                               setApplicant({ ...applicant, shuttle: newShuttle });
                             }}
                           />
-                          {opt}
+                          {i18n.language === 'en' ? t(`reservation.step2.shuttleDropoff${idx + 1}`) : opt}
                         </label>
                       ))}
                     </div>
@@ -1161,21 +1161,21 @@ const Reservation: React.FC = () => {
                 <div className="lg:w-80 lg:flex-shrink-0 lg:order-2">
                   <div className="sticky top-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 mb-4 lg:mb-0 transition-all duration-300 hover:shadow-xl">
                     <h3 className="font-semibold text-lg mb-3 flex items-center">
-                      <span className="mr-2">💰</span> 即時價格預覽
+                      <span className="mr-2">💰</span> {t('reservation.step3.pricePreview')}
                     </h3>
-                    
+
                     {(() => {
                       const { total, details, days, crossStore } = calcRealTimePrice();
                       return (
                         <>
                           <div className="text-sm text-gray-600 mb-3">
-                            租借天數：{days || 0}天
+                            {t('reservation.step3.rentalDays')}：{days || 0}{t('reservation.step3.days')}
                           </div>
-                          
+
                           {details.map((person: any) => (
                             <div key={person.index} className="mb-3 pb-3 border-b border-gray-100 last:border-0">
                               <div className="font-medium text-sm mb-1">
-                                第{person.index}位租借者
+                                {t('reservation.step3.renterNumber', { number: person.index })}
                               </div>
                               {person.items.length > 0 ? (
                                 <>
@@ -1186,33 +1186,33 @@ const Reservation: React.FC = () => {
                                     </div>
                                   ))}
                                   <div className="flex justify-between text-sm font-medium mt-1 ml-2">
-                                    <span>小計</span>
+                                    <span>{t('reservation.step3.subtotal')}</span>
                                     <span>¥{person.subtotal.toLocaleString()}</span>
                                   </div>
                                 </>
                               ) : (
-                                <div className="text-xs text-gray-400 ml-2">尚未選擇裝備</div>
+                                <div className="text-xs text-gray-400 ml-2">{t('reservation.step3.notSelected')}</div>
                               )}
                             </div>
                           ))}
-                          
+
                           {crossStore && (
                             <div className="flex justify-between text-sm mb-2">
-                              <span>甲地租乙地還</span>
+                              <span>{t('reservation.step3.crossStoreReturn')}</span>
                               <span>¥{(3000 * details.filter((d: any) => d.subtotal > 0).length).toLocaleString()}</span>
                             </div>
                           )}
-                          
+
                           {discountInfo && discountInfo.valid && (
                             <div className="flex justify-between text-sm text-green-600 mb-2">
-                              <span>折扣 ({applicant.discountCode})</span>
+                              <span>{t('reservation.step3.discount')} ({applicant.discountCode})</span>
                               <span>-¥{discountAmount.toLocaleString()}</span>
                             </div>
                           )}
-                          
+
                           <div className="border-t pt-2 mt-2">
                             <div className="flex justify-between font-bold text-lg">
-                              <span>總計</span>
+                              <span>{t('reservation.step3.total')}</span>
                               <span className="text-primary-600 transition-all duration-300 transform">
                                 ¥{(total - (discountAmount || 0)).toLocaleString()}
                               </span>
@@ -1229,49 +1229,49 @@ const Reservation: React.FC = () => {
                 <div className="space-y-8">
               {persons.map((p, idx) => (
                 <div key={idx} className="border rounded-lg p-4 mb-2 bg-snow-50">
-                  <div className="font-semibold mb-2">第 {idx + 1} 位租借者</div>
+                  <div className="font-semibold mb-2">{t('reservation.step3.renterNumber', { number: idx + 1 })}</div>
                   <div className="grid md:grid-cols-2 gap-4">
-                    <input className="input" placeholder="姓名" value={p.name} onChange={e => handlePersonChange(idx, 'name', e.target.value)} required />
-                    <input className="input" placeholder="年齡" type="number" min={1} max={100} value={p.age} onChange={e => handlePersonChange(idx, 'age', e.target.value)} required />
+                    <input className="input" placeholder={t('reservation.step3.name')} value={p.name} onChange={e => handlePersonChange(idx, 'name', e.target.value)} required />
+                    <input className="input" placeholder={t('reservation.step3.age')} type="number" min={1} max={100} value={p.age} onChange={e => handlePersonChange(idx, 'age', e.target.value)} required />
                     <select className="input" value={p.gender} onChange={e => handlePersonChange(idx, 'gender', e.target.value)} required>
-                      <option value="">性別</option>
-                      <option value="男">男</option>
-                      <option value="女">女</option>
+                      <option value="">{t('reservation.step3.gender')}</option>
+                      <option value="男">{t('reservation.step3.male')}</option>
+                      <option value="女">{t('reservation.step3.female')}</option>
                     </select>
-                    <input className="input" placeholder="身高 (cm)" type="number" min={50} max={250} value={p.height} onChange={e => handlePersonChange(idx, 'height', e.target.value)} required />
-                    <input className="input" placeholder="體重 (kg)" type="number" min={10} max={200} value={p.weight} onChange={e => handlePersonChange(idx, 'weight', e.target.value)} required />
-                    <input className="input" placeholder="腳的尺寸 (cm)" type="number" min={15} max={35} value={p.footSize} onChange={e => handlePersonChange(idx, 'footSize', e.target.value)} required />
+                    <input className="input" placeholder={t('reservation.step3.height')} type="number" min={50} max={250} value={p.height} onChange={e => handlePersonChange(idx, 'height', e.target.value)} required />
+                    <input className="input" placeholder={t('reservation.step3.weight')} type="number" min={10} max={200} value={p.weight} onChange={e => handlePersonChange(idx, 'weight', e.target.value)} required />
+                    <input className="input" placeholder={t('reservation.step3.footSize')} type="number" min={15} max={35} value={p.footSize} onChange={e => handlePersonChange(idx, 'footSize', e.target.value)} required />
                     <select className="input" value={p.level} onChange={e => handlePersonChange(idx, 'level', e.target.value)} required>
-                      <option value="">滑雪程度</option>
-                      {levels.map(l => <option key={l} value={l}>{l}</option>)}
+                      <option value="">{t('reservation.step3.skiLevel')}</option>
+                      {levels.map(l => <option key={l} value={l}>{i18n.language === 'en' ? t(`options.levels.${l === '初學者' ? 'beginner' : l === '經驗者' ? 'experienced' : 'advanced'}`) : l}</option>)}
                     </select>
                     <select className="input" value={p.skiType} onChange={e => handlePersonChange(idx, 'skiType', e.target.value)} required>
-                      <option value="">滑雪種類</option>
-                      {skiTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                      <option value="">{t('reservation.step3.skiType')}</option>
+                      {skiTypes.map(st => <option key={st} value={st}>{i18n.language === 'en' ? t(`options.skiTypes.${st === '單板' ? 'snowboard' : 'ski'}`) : st}</option>)}
                     </select>
                     <select className="input" value={p.boardType} onChange={e => handlePersonChange(idx, 'boardType', e.target.value)} required>
-                      <option value="">欲租用雪板類型</option>
-                      {boardTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                      <option value="">{t('reservation.step3.boardType')}</option>
+                      {boardTypes.map(bt => <option key={bt} value={bt}>{i18n.language === 'en' ? t(`options.boardTypes.${bt.includes('一般') ? 'standard' : bt.includes('進階') ? 'advanced' : 'powder'}`) : bt}</option>)}
                     </select>
                     <select className="input" value={p.equipType} onChange={e => handlePersonChange(idx, 'equipType', e.target.value)} required>
-                      <option value="">租用裝備類型</option>
-                      {equipTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                      <option value="">{t('reservation.step3.equipType')}</option>
+                      {equipTypes.map(et => <option key={et} value={et}>{i18n.language === 'en' ? t(`options.equipTypes.${et.includes('大全配') ? 'fullSet' : et.includes('板+靴') ? 'boardBoots' : 'boardOnly'}`) : et}</option>)}
                     </select>
                     <select className="input" value={p.clothingType} onChange={e => handlePersonChange(idx, 'clothingType', e.target.value)} required disabled={p.equipType.includes('大全配')}>
-                      <option value="">是否要另外租借雪衣褲</option>
-                      {clothingTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                      <option value="">{t('reservation.step3.clothingRental')}</option>
+                      {clothingTypes.map(ct => <option key={ct} value={ct}>{i18n.language === 'en' ? t(`options.clothingTypes.${ct === '單租雪衣' ? 'jacketOnly' : ct === '單租雪褲' ? 'pantsOnly' : ct.includes('整套') ? 'fullSet' : 'no'}`) : ct}</option>)}
                     </select>
                     <select className="input" value={p.helmetOnly} onChange={e => handlePersonChange(idx, 'helmetOnly', e.target.value)} required disabled={p.equipType.includes('大全配')}>
-                      <option value="">單租安全帽</option>
-                      {yesNo.map(t => <option key={t} value={t}>{t}</option>)}
+                      <option value="">{t('reservation.step3.helmetOnly')}</option>
+                      {yesNo.map(yn => <option key={yn} value={yn}>{i18n.language === 'en' ? (yn === '是' ? t('common.yes') : t('common.no')) : yn}</option>)}
                     </select>
                     <select className="input" value={p.fastWear} onChange={e => handlePersonChange(idx, 'fastWear', e.target.value)} required disabled={p.skiType === '雙板'}>
-                      <option value="">是否升級Fase快穿裝備</option>
-                      {yesNo.map(t => <option key={t} value={t}>{t}</option>)}
+                      <option value="">{t('reservation.step3.faseUpgrade')}</option>
+                      {yesNo.map(yn => <option key={yn} value={yn}>{i18n.language === 'en' ? (yn === '是' ? t('common.yes') : t('common.no')) : yn}</option>)}
                     </select>
                     <select className="input" value={p.protectiveGear} onChange={e => handlePersonChange(idx, 'protectiveGear', e.target.value)} required>
-                      <option value="">護具租借</option>
-                      {protectiveGearOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                      <option value="">{t('reservation.step3.protectiveGear')}</option>
+                      {protectiveGearOptions.map(pg => <option key={pg} value={pg}>{i18n.language === 'en' ? t(`options.protectiveGear.${pg === '否' ? 'no' : pg.includes('全配') ? 'fullSet' : pg === '護腕' ? 'wrist' : pg === '護膝' ? 'knee' : 'hip'}`) : pg}</option>)}
                     </select>
                   </div>
                 </div>
@@ -1282,69 +1282,69 @@ const Reservation: React.FC = () => {
           )}
           {step === 4 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-bold text-snow-900">預約資料確認</h2>
+              <h2 className="text-xl font-bold text-snow-900">{t('reservation.step4.title')}</h2>
               <div>
-                <div className="mb-2">租借日期：{startDate} ~ {endDate}</div>
-                <div className="mb-2">取件日期：{pickupDate}</div>
-                <div className="mb-2">取件時間：{pickupTime}</div>
-                <div className="mb-2">租借地點：{rentStore}</div>
-                <div className="mb-2">歸還地點：{returnStore}</div>
-                <div className="mb-2">人數：{people}</div>
+                <div className="mb-2">{t('reservation.step4.rentalPeriod')}：{startDate} ~ {endDate}</div>
+                <div className="mb-2">{t('reservation.step4.pickupDate')}：{pickupDate}</div>
+                <div className="mb-2">{t('reservation.step4.pickupTime')}：{pickupTime}</div>
+                <div className="mb-2">{t('reservation.step4.rentLocation')}：{i18n.language === 'en' ? t(`options.stores.${rentStore === '富良野店' ? 'furano' : 'asahikawa'}`) : rentStore}</div>
+                <div className="mb-2">{t('reservation.step4.returnLocation')}：{i18n.language === 'en' ? t(`options.stores.${returnStore === '富良野店' ? 'furano' : 'asahikawa'}`) : returnStore}</div>
+                <div className="mb-2">{t('reservation.step4.numberOfPeople')}：{people}</div>
                 <div className="mb-4 bg-blue-50 p-4 rounded-lg">
-                  <div className="text-lg font-semibold mb-2">費用明細</div>
+                  <div className="text-lg font-semibold mb-2">{t('reservation.step4.costDetails')}</div>
                   {discountAmount > 0 ? (
                     <>
-                      <div className="mb-1">原價：¥{originalPrice}</div>
+                      <div className="mb-1">{t('reservation.step4.originalPrice')}：¥{originalPrice}</div>
                       <div className="mb-1 text-green-600">
-                        折扣碼 ({applicant.discountCode})：-¥{discountAmount}
+                        {t('reservation.step4.discountCode')} ({applicant.discountCode})：-¥{discountAmount}
                       </div>
                       <div className="text-xl font-bold text-primary-600">
-                        總價：¥{price}
+                        {t('reservation.step4.totalPrice')}：¥{price}
                       </div>
                     </>
                   ) : (
                     <div className="text-xl font-bold text-primary-600">
-                      總價：¥{price}
+                      {t('reservation.step4.totalPrice')}：¥{price}
                     </div>
                   )}
                 </div>
               </div>
               {/* 預覽頁面顯示申請人資料 */}
               <div className="mb-6">
-                <div className="font-bold text-lg mb-2">申請人資料</div>
-                <div>姓名：{applicant.name}</div>
-                <div>電話：{applicant.countryCode} {applicant.phone}</div>
-                <div>Email：{applicant.email}</div>
-                <div>通訊軟體：{applicant.messenger}（ID：{applicant.messengerId}）</div>
-                <div>住宿飯店：{applicant.hotel}</div>
-                <div>接送需求：{applicant.shuttleMode === 'none' ? '不須接送' : (applicant.shuttle.length ? applicant.shuttle.join('、') : '未選擇')}</div>
+                <div className="font-bold text-lg mb-2">{t('reservation.step4.applicantInfo')}</div>
+                <div>{t('reservation.step4.name')}：{applicant.name}</div>
+                <div>{t('reservation.step4.phone')}：{applicant.countryCode} {applicant.phone}</div>
+                <div>{t('reservation.step4.email')}：{applicant.email}</div>
+                <div>{t('reservation.step4.messenger')}：{applicant.messenger}（{t('reservation.step4.messengerId')}：{applicant.messengerId}）</div>
+                <div>{t('reservation.step4.hotel')}：{applicant.hotel}</div>
+                <div>{t('reservation.step4.shuttleService')}：{applicant.shuttleMode === 'none' ? t('reservation.step4.noShuttle') : (applicant.shuttle.length ? applicant.shuttle.join('、') : t('reservation.step4.notSelected'))}</div>
               </div>
               <div className="space-y-4">
                 {detail.map((p, idx) => (
                   <div key={idx} className="border rounded-lg p-4 bg-snow-50">
-                    <div className="font-semibold mb-2">第 {p.idx} 位租借者</div>
+                    <div className="font-semibold mb-2">{t('reservation.step4.renterInfo', { number: p.idx })}</div>
                     <div className="grid md:grid-cols-2 gap-2 text-snow-700 text-sm">
-                      <div>姓名：{p.name}</div>
-                      <div>年齡：{p.age}</div>
-                      <div>性別：{p.gender}</div>
-                      <div>身高：{p.height} cm</div>
-                      <div>體重：{p.weight} kg</div>
-                      <div>腳的尺寸：{p.footSize} cm</div>
-                      <div>滑雪程度：{p.level}</div>
-                      <div>滑雪種類：{p.skiType}</div>
-                      <div>欲租用雪板類型：{p.boardType}</div>
-                      <div>租用裝備類型：{p.equipType}</div>
+                      <div>{t('reservation.step4.name')}：{p.name}</div>
+                      <div>{t('reservation.step3.age')}：{p.age}</div>
+                      <div>{t('reservation.step3.gender')}：{i18n.language === 'en' ? (p.gender === '男' ? t('reservation.step3.male') : t('reservation.step3.female')) : p.gender}</div>
+                      <div>{t('reservation.step3.height')}：{p.height} cm</div>
+                      <div>{t('reservation.step3.weight')}：{p.weight} kg</div>
+                      <div>{t('reservation.step3.footSize')}：{p.footSize} cm</div>
+                      <div>{t('reservation.step3.skiLevel')}：{i18n.language === 'en' ? t(`options.levels.${p.level === '初學者' ? 'beginner' : p.level === '經驗者' ? 'experienced' : 'advanced'}`) : p.level}</div>
+                      <div>{t('reservation.step3.skiType')}：{i18n.language === 'en' ? t(`options.skiTypes.${p.skiType === '單板' ? 'snowboard' : 'ski'}`) : p.skiType}</div>
+                      <div>{t('reservation.step3.boardType')}：{i18n.language === 'en' ? t(`options.boardTypes.${p.boardType?.includes('一般') ? 'standard' : p.boardType?.includes('進階') ? 'advanced' : 'powder'}`) : p.boardType}</div>
+                      <div>{t('reservation.step3.equipType')}：{i18n.language === 'en' ? t(`options.equipTypes.${p.equipType?.includes('大全配') ? 'fullSet' : p.equipType?.includes('板+靴') ? 'boardBoots' : 'boardOnly'}`) : p.equipType}</div>
                       {p.equipType !== '大全配 (板+靴+雪衣&雪褲+安全帽)' && (
                         <>
-                          <div>是否要另外租借雪衣褲：{p.clothingType}</div>
-                          <div>單租安全帽：{p.helmetOnly}</div>
+                          <div>{t('reservation.step3.clothingRental')}：{i18n.language === 'en' ? t(`options.clothingTypes.${p.clothingType === '單租雪衣' ? 'jacketOnly' : p.clothingType === '單租雪褲' ? 'pantsOnly' : p.clothingType?.includes('整套') ? 'fullSet' : 'no'}`) : p.clothingType}</div>
+                          <div>{t('reservation.step3.helmetOnly')}：{i18n.language === 'en' ? (p.helmetOnly === '是' ? t('common.yes') : t('common.no')) : p.helmetOnly}</div>
                         </>
                       )}
-                      <div>是否升級Fase快穿裝備：{p.fastWear}</div>
-                      <div>護具租借：{p.protectiveGear}</div>
+                      <div>{t('reservation.step3.faseUpgrade')}：{i18n.language === 'en' ? (p.fastWear === '是' ? t('common.yes') : t('common.no')) : p.fastWear}</div>
+                      <div>{t('reservation.step3.protectiveGear')}：{i18n.language === 'en' ? t(`options.protectiveGear.${p.protectiveGear === '否' ? 'no' : p.protectiveGear?.includes('全配') ? 'fullSet' : p.protectiveGear === '護腕' ? 'wrist' : p.protectiveGear === '護膝' ? 'knee' : 'hip'}`) : p.protectiveGear}</div>
                       {/* 價格內訳 */}
                       <div className="col-span-2 mt-2">
-                        <div className="font-semibold">費用明細：</div>
+                        <div className="font-semibold">{t('reservation.step4.costBreakdown')}</div>
                         <ul className="ml-4 list-disc">
                           {(() => {
                             const days = getDays(startDate, endDate);
@@ -1352,17 +1352,17 @@ const Reservation: React.FC = () => {
                             // 若主裝備已經是板靴組，不再顯示雪靴細項
                             const isBootsIncluded = equipLabel.includes('板靴組');
                             return <>
-                              {equipLabel && <li>{equipLabel} {days}天：¥ {p.main}</li>}
-                              {!isBootsIncluded && p.boots > 0 && <li>雪靴 {days}天：¥ {p.boots}</li>}
-                              {clothingLabel && <li>{clothingLabel} {days}天：¥ {p.clothing}</li>}
-                              {helmetLabel && <li>{helmetLabel} {days}天：¥ {p.helmet}</li>}
-                              {faseLabel && <li>{faseLabel} {days}天：¥ {p.fase}</li>}
-                              {p.protective > 0 && <li>{p.protectiveGear} {days}天：¥ {p.protective}</li>}
-                              {p.cross > 0 && <li>甲地租乙地還：¥ {p.cross}</li>}
+                              {equipLabel && <li>{equipLabel} {t('reservation.step4.daysText', { days })}：¥ {p.main}</li>}
+                              {!isBootsIncluded && p.boots > 0 && <li>{t('priceLabels.boots')} {t('reservation.step4.daysText', { days })}：¥ {p.boots}</li>}
+                              {clothingLabel && <li>{clothingLabel} {t('reservation.step4.daysText', { days })}：¥ {p.clothing}</li>}
+                              {helmetLabel && <li>{helmetLabel} {t('reservation.step4.daysText', { days })}：¥ {p.helmet}</li>}
+                              {faseLabel && <li>{faseLabel} {t('reservation.step4.daysText', { days })}：¥ {p.fase}</li>}
+                              {p.protective > 0 && <li>{p.protectiveGear} {t('reservation.step4.daysText', { days })}：¥ {p.protective}</li>}
+                              {p.cross > 0 && <li>{t('reservation.step4.crossStoreReturn')}：¥ {p.cross}</li>}
                             </>;
                           })()}
                         </ul>
-                        <div className="mt-1">總價：<span className="text-primary-600 font-bold">¥ {p.subtotal}</span></div>
+                        <div className="mt-1">{t('reservation.step4.subtotal')}：<span className="text-primary-600 font-bold">¥ {p.subtotal}</span></div>
                       </div>
                     </div>
                   </div>
@@ -1471,7 +1471,7 @@ const Reservation: React.FC = () => {
       </div>
       {step === 4 && detail.length > 0 && (
         <div className="mt-6 text-right text-lg font-bold">
-          合計總金額：¥ {price}
+          {t('reservation.step4.totalPrice')}：¥ {price}
         </div>
       )}
     </div>
