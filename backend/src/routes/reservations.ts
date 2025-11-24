@@ -207,10 +207,10 @@ router.post('/', [
         console.log('💾 Saving multiple persons data:', persons);
         
         const insertPersonSql = `
-          INSERT INTO reservation_persons (reservation_id, name, age, gender, height, weight, footSize, level, skiType, boardType, equipType, clothingType, helmetOnly, fastWear)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO reservation_persons (reservation_id, name, age, gender, height, weight, footSize, level, skiType, boardType, equipType, clothingType, helmetOnly, fastWear, protectiveGear)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
-        
+
         for (const person of persons) {
           db.run(insertPersonSql, [
             reservationId,
@@ -226,7 +226,8 @@ router.post('/', [
             person.equipType || '',
             person.clothingType || '',
             person.helmetOnly || '',
-            person.fastWear || ''
+            person.fastWear || '',
+            person.protectiveGear || '否'
           ], function(err) {
             if (err) {
               console.error('❌ Error saving person data:', err);

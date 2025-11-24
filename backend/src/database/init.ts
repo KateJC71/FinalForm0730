@@ -167,6 +167,7 @@ async function initDatabase() {
           clothingType TEXT,
           helmetOnly TEXT,
           fastWear TEXT,
+          protectiveGear TEXT,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
           FOREIGN KEY (reservation_id) REFERENCES reservations(id)
         )
