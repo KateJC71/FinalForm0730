@@ -42,68 +42,67 @@ const Home: React.FC = () => {
                 {t('home.termsTitle')}
               </h3>
               <div className="bg-gray-50 border rounded-lg p-4 max-h-96 overflow-y-auto text-left text-sm text-gray-700 leading-relaxed space-y-3">
-                <p><strong>請仔細閱讀以下營業資訊與服務條款：</strong></p>
-                
+                <p><strong>{t('terms.readCarefully')}</strong></p>
+
                 <div className="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400">
-                  <p><strong>📅 營業資訊</strong></p>
+                  <p><strong>📅 {t('terms.businessInfo')}</strong></p>
                   <div className="mt-3 grid md:grid-cols-2 gap-4">
-                    {/* 富良野店 */}
+                    {/* Furano Store */}
                     <div className="bg-white p-3 rounded-lg border border-blue-200">
-                      <h4 className="font-bold text-blue-800 mb-2 text-center">🏔️ 富良野店</h4>
+                      <h4 className="font-bold text-blue-800 mb-2 text-center">🏔️ {t('terms.furanoStore')}</h4>
                       <ul className="text-sm space-y-1">
-                        <li><strong>營業日期：</strong>2025/12/1 - 2026/05/10</li>
-                        <li><strong>營業時間：</strong>08:00 - 18:00</li>
-                        <li><strong>最後取件：</strong>17:30</li>
+                        <li><strong>{t('terms.businessDate')}</strong>{t('terms.furanoDate')}</li>
+                        <li><strong>{t('terms.businessHours')}</strong>{t('terms.furanoHours')}</li>
+                        <li><strong>{t('terms.lastPickup')}</strong>{t('terms.furanoLastPickup')}</li>
                       </ul>
                     </div>
-                    
-                    {/* 旭川店 */}
+
+                    {/* Asahikawa Store */}
                     <div className="bg-white p-3 rounded-lg border border-blue-200">
-                      <h4 className="font-bold text-blue-800 mb-2 text-center">🏙️ 旭川店</h4>
+                      <h4 className="font-bold text-blue-800 mb-2 text-center">🏙️ {t('terms.asahikawaStore')}</h4>
                       <ul className="text-sm space-y-1">
-                        <li><strong>營業日期：</strong>2025/12/1 - 2026/03/31</li>
-                        <li><strong>營業時間：</strong>07:30 - 19:00</li>
-                        <li><strong>最後取件：</strong>18:30</li>
+                        <li><strong>{t('terms.businessDate')}</strong>{t('terms.asahikawaDate')}</li>
+                        <li><strong>{t('terms.businessHours')}</strong>{t('terms.asahikawaHours')}</li>
+                        <li><strong>{t('terms.lastPickup')}</strong>{t('terms.asahikawaLastPickup')}</li>
                       </ul>
                     </div>
                   </div>
-                  
+
                   <div className="mt-3 bg-red-50 p-2 rounded border-l-4 border-red-400">
-                    <p className="text-sm"><strong>⚠️ 注意事項：</strong></p>
+                    <p className="text-sm"><strong>⚠️ {t('terms.notes')}</strong></p>
                     <ul className="text-sm mt-1 space-y-1">
-                      <li>• <span className="text-red-600 font-semibold">8:00-12:00 尖峰時段，非預約客戶可能無法接待</span></li>
-                      <li>• 14:00以後為前一日提早取件時段</li>
+                      <li>• <span className="text-red-600 font-semibold">{t('terms.peakHoursNote')}</span></li>
+                      <li>• {t('terms.earlyPickupNote')}</li>
                     </ul>
                   </div>
                 </div>
 
-
                 <div className="bg-yellow-50 p-3 rounded-lg border-l-4 border-yellow-400">
-                  <p><strong>🚌 接送規則</strong></p>
+                  <p><strong>🚌 {t('terms.shuttleRules')}</strong></p>
                   <div className="mt-3">
                     <div className="bg-green-100 p-2 rounded mb-3 border-l-4 border-green-500">
-                      <p className="text-sm font-semibold text-green-800">💰 免費接送條件</p>
+                      <p className="text-sm font-semibold text-green-800">💰 {t('terms.freeShuttleCondition')}</p>
                       <ul className="text-sm mt-1">
-                        <li>• 當日裝備租滿￥10,000/人即可免費接送</li>
-                        <li>• 上課前租借，請提前60分鐘以上來店</li>
+                        <li>• {t('terms.shuttleCondition1')}</li>
+                        <li>• {t('terms.shuttleCondition2')}</li>
                       </ul>
                     </div>
-                    
+
                     <div className="grid md:grid-cols-2 gap-3">
-                      {/* 富良野接送範圍 */}
+                      {/* Furano Shuttle Range */}
                       <div className="bg-white p-3 rounded border border-yellow-300">
-                        <h4 className="font-bold text-yellow-800 mb-2">🏔️ 富良野店接送範圍</h4>
+                        <h4 className="font-bold text-yellow-800 mb-2">🏔️ {t('terms.furanoShuttleRange')}</h4>
                         <ul className="text-sm space-y-1">
-                          <li>• 富良野市區</li>
-                          <li>• 新富良野王子/北之峰區域飯店</li>
+                          <li>• {t('terms.furanoRange1')}</li>
+                          <li>• {t('terms.furanoRange2')}</li>
                         </ul>
                       </div>
-                      
-                      {/* 旭川接送範圍 */}
+
+                      {/* Asahikawa Shuttle Range */}
                       <div className="bg-white p-3 rounded border border-yellow-300">
-                        <h4 className="font-bold text-yellow-800 mb-2">🏙️ 旭川店接送範圍</h4>
+                        <h4 className="font-bold text-yellow-800 mb-2">🏙️ {t('terms.asahikawaShuttleRange')}</h4>
                         <ul className="text-sm space-y-1">
-                          <li>• 旭川市區⇔旭川車站</li>
+                          <li>• {t('terms.asahikawaRange1')}</li>
                         </ul>
                       </div>
                     </div>
@@ -111,195 +110,195 @@ const Home: React.FC = () => {
                 </div>
 
                 <div className="bg-purple-50 p-3 rounded-lg border-l-4 border-purple-400">
-                  <p><strong>💳 付款方式</strong></p>
-                  <p className="ml-4 mt-2">日幣／僅接受信用卡付款</p>
+                  <p><strong>💳 {t('terms.paymentMethod')}</strong></p>
+                  <p className="ml-4 mt-2">{t('terms.paymentDesc')}</p>
                 </div>
                 
                 <div>
-                  <p><strong>📋 雪具租賃服務條款</strong></p>
-                  
+                  <p><strong>📋 {t('terms.serviceTerms')}</strong></p>
+
                   <div className="ml-4 space-y-2">
                     <div>
-                      <p><strong>一、服務說明</strong></p>
+                      <p><strong>{t('terms.section1Title')}</strong></p>
                       <ul className="list-disc list-inside ml-4 space-y-1">
-                        <li>本公司提供網路預約滑雪相關用品租賃服務</li>
-                        <li>服務範圍：富良野市、旭川市內</li>
+                        <li>{t('terms.section1Item1')}</li>
+                        <li>{t('terms.section1Item2')}</li>
                       </ul>
                     </div>
 
                     <div>
-                      <p><strong>二、租賃資格</strong></p>
-                      <p className="ml-4 text-xs">如有下列情況，本公司有權限制或取消租賃資格：</p>
+                      <p><strong>{t('terms.section2Title')}</strong></p>
+                      <p className="ml-4 text-xs">{t('terms.section2Desc')}</p>
                       <ul className="list-disc list-inside ml-8 space-y-1 text-xs">
-                        <li>提供虛假資料或資料不完整</li>
-                        <li>有未歸還之租賃物品紀錄</li>
-                        <li>有租金逾期或未支付紀錄</li>
-                        <li>無法聯繫到登記的聯絡方式</li>
+                        <li>{t('terms.section2Item1')}</li>
+                        <li>{t('terms.section2Item2')}</li>
+                        <li>{t('terms.section2Item3')}</li>
+                        <li>{t('terms.section2Item4')}</li>
                       </ul>
                     </div>
 
                     <div>
-                      <p><strong>三、預約與取消</strong></p>
+                      <p><strong>{t('terms.section3Title')}</strong></p>
                       <div className="ml-4 space-y-1">
-                        <p className="font-medium">預約成立：</p>
+                        <p className="font-medium">{t('terms.reservationConfirmed')}</p>
                         <ul className="list-disc list-inside ml-4 space-y-1 text-xs">
-                          <li>完成線上登記、付款，並收到預約完成確認信</li>
-                          <li>如需變更預約內容，請直接聯繫Line客服</li>
+                          <li>{t('terms.reservationItem1')}</li>
+                          <li>{t('terms.reservationItem2')}</li>
                         </ul>
-                        
-                        <p className="font-medium">預約確認流程：</p>
+
+                        <p className="font-medium">{t('terms.confirmationProcess')}</p>
                         <ul className="list-disc list-inside ml-4 space-y-1 text-xs">
-                          <li>預約後24小時內發送確認信</li>
-                          <li>取件當日請攜帶：護照、預約確認信、付款證明</li>
+                          <li>{t('terms.confirmItem1')}</li>
+                          <li>{t('terms.confirmItem2')}</li>
                         </ul>
-                        
-                        <p className="font-medium">退款與改期政策（以取件日為基準）：</p>
-                        
+
+                        <p className="font-medium">{t('terms.refundPolicy')}</p>
+
                         <div className="ml-4 space-y-2">
                           <div>
-                            <p className="font-medium text-xs">退款規則</p>
+                            <p className="font-medium text-xs">{t('terms.refundRules')}</p>
                             <ul className="list-disc list-inside ml-4 space-y-1 text-xs">
-                              <li><strong>取件日前 14 天（不含當日）以前取消</strong> → 退還扣除刷卡手續費（4%）後的全額</li>
-                              <li><strong>取件日前 7～13 天取消</strong> → 退還已付款項的 50%</li>
-                              <li><strong>取件日前 4～6 天取消</strong> → 退還已付款項的 20%</li>
-                              <li><strong>取件日前 3 天（含當日）取消</strong> → 恕不退款</li>
+                              <li><strong>{t('terms.refund14Days')}</strong> → {t('terms.refund14DaysResult')}</li>
+                              <li><strong>{t('terms.refund7to13Days')}</strong> → {t('terms.refund7to13DaysResult')}</li>
+                              <li><strong>{t('terms.refund4to6Days')}</strong> → {t('terms.refund4to6DaysResult')}</li>
+                              <li><strong>{t('terms.refund3Days')}</strong> → {t('terms.refund3DaysResult')}</li>
                             </ul>
                           </div>
-                          
+
                           <div>
-                            <p className="font-medium text-xs">改期與變更規則</p>
+                            <p className="font-medium text-xs">{t('terms.changeRules')}</p>
                             <ul className="list-disc list-inside ml-4 space-y-1 text-xs">
-                              <li><strong>更改取件日期：</strong>最晚需在取件日前 3 天（不含當日）辦理，且僅可更改一次</li>
-                              <li><strong>更改租借天數或部分人數取消</strong> → 視同整筆訂單取消，需重新預約</li>
+                              <li><strong>{t('terms.changeDate')}</strong>{t('terms.changeDateNote')}</li>
+                              <li><strong>{t('terms.changeDaysOrCancel')}</strong> → {t('terms.changeDaysOrCancelNote')}</li>
                             </ul>
                           </div>
-                          
+
                           <div className="text-xs text-gray-600 mt-2 p-2 bg-gray-50 rounded">
-                            <p>💡 <strong>天數計算方式：</strong>以取件日為第 0 天，往前一天為第 1 天，再依此類推</p>
-                            <p>💳 <strong>付款方式：</strong>日圓／僅接受信用卡付款</p>
+                            <p>💡 <strong>{t('terms.calculationMethod')}</strong>{t('terms.calculationNote')}</p>
+                            <p>💳 <strong>{t('terms.paymentMethodNote')}</strong>{t('terms.paymentNote')}</p>
                           </div>
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <p><strong>四、租賃規定</strong></p>
+                      <p><strong>{t('terms.section4Title')}</strong></p>
                       <div className="ml-4 space-y-1 text-xs">
-                        <p className="font-medium">尺寸說明：</p>
+                        <p className="font-medium">{t('terms.sizeDescription')}</p>
                         <ul className="list-disc list-inside ml-4">
-                          <li>實際尺寸以現場試穿為準</li>
-                          <li>如尺寸不合，將提供最接近需求之現有庫存</li>
-                          <li>因尺寸問題恕不退費</li>
+                          <li>{t('terms.sizeItem1')}</li>
+                          <li>{t('terms.sizeItem2')}</li>
+                          <li>{t('terms.sizeItem3')}</li>
                         </ul>
-                        
-                        <p className="font-medium">歸還規定：</p>
+
+                        <p className="font-medium">{t('terms.returnRules')}</p>
                         <ul className="list-disc list-inside ml-4">
-                          <li>須於租期結束當日歸還</li>
-                          <li>逾期每日收取一日租金</li>
-                          <li>逾期7日未歸還視同遺失</li>
+                          <li>{t('terms.returnItem1')}</li>
+                          <li>{t('terms.returnItem2')}</li>
+                          <li>{t('terms.returnItem3')}</li>
                         </ul>
-                        
-                        <p className="font-medium">損壞賠償：</p>
+
+                        <p className="font-medium">{t('terms.damageCompensation')}</p>
                         <ul className="list-disc list-inside ml-4">
-                          <li>遺失或嚴重損壞：收取該物品20倍日租金</li>
-                          <li>賠償範圍包含租賃物損失及營業損失</li>
+                          <li>{t('terms.damageItem1')}</li>
+                          <li>{t('terms.damageItem2')}</li>
                         </ul>
                       </div>
                     </div>
 
                     <div>
-                      <p><strong>五、安全與清潔政策</strong></p>
+                      <p><strong>{t('terms.section5Title')}</strong></p>
                       <div className="ml-4 space-y-1 text-xs">
-                        <p className="font-medium">安全檢查：</p>
+                        <p className="font-medium">{t('terms.safetyCheck')}</p>
                         <ul className="list-disc list-inside ml-4">
-                          <li>所有裝備租借前後皆經清潔消毒</li>
-                          <li>租借裝備前將進行安全檢查說明</li>
-                          <li>如發現裝備異常請立即停止使用並聯繫本店</li>
+                          <li>{t('terms.safetyItem1')}</li>
+                          <li>{t('terms.safetyItem2')}</li>
+                          <li>{t('terms.safetyItem3')}</li>
                         </ul>
-                        <p className="font-medium mt-2">衛生政策：</p>
+                        <p className="font-medium mt-2">{t('terms.hygienePolicy')}</p>
                         <ul className="list-disc list-inside ml-4">
-                          <li>如有衛生疑慮請於租借時提出</li>
-                          <li>建議承租人自備滑雪保險</li>
+                          <li>{t('terms.hygieneItem1')}</li>
+                          <li>{t('terms.hygieneItem2')}</li>
                         </ul>
                       </div>
                     </div>
 
                     <div>
-                      <p><strong>六、附加服務說明</strong></p>
+                      <p><strong>{t('terms.section6Title')}</strong></p>
                       <div className="ml-4 space-y-1 text-xs">
-                        <p className="font-medium">免費接送服務：</p>
+                        <p className="font-medium">{t('terms.freeShuttleService')}</p>
                         <ul className="list-disc list-inside ml-4">
-                          <li>實際服務視現場狀況調整</li>
-                          <li>如因接送延誤造成任何損失（含錯過交通工具），本公司不負賠償責任</li>
+                          <li>{t('terms.shuttleItem1')}</li>
+                          <li>{t('terms.shuttleItem2')}</li>
                         </ul>
-                        <p className="font-medium mt-2">行李寄放服務：</p>
+                        <p className="font-medium mt-2">{t('terms.luggageStorage')}</p>
                         <ul className="list-disc list-inside ml-4">
-                          <li>限雪具承租者使用</li>
-                          <li>每人最多2件行李</li>
-                          <li>須於當日營業結束前領回</li>
+                          <li>{t('terms.luggageItem1')}</li>
+                          <li>{t('terms.luggageItem2')}</li>
+                          <li>{t('terms.luggageItem3')}</li>
                         </ul>
                       </div>
                     </div>
 
                     <div>
-                      <p><strong>七、天候影響政策</strong></p>
+                      <p><strong>{t('terms.section7Title')}</strong></p>
                       <ul className="list-disc list-inside ml-4 space-y-1 text-xs">
-                        <li>暴風雪等情況下接送服務可能暫停</li>
-                        <li>因天災停業期間可免費延期租借</li>
+                        <li>{t('terms.weatherItem1')}</li>
+                        <li>{t('terms.weatherItem2')}</li>
                       </ul>
                     </div>
 
                     <div>
-                      <p><strong>八、裝備故障應對</strong></p>
+                      <p><strong>{t('terms.section8Title')}</strong></p>
                       <ul className="list-disc list-inside ml-4 space-y-1 text-xs">
-                        <li>租借期間如遇裝備故障，請立即聯繫本店</li>
-                        <li>本店將免費提供替代裝備或協助維修</li>
-                        <li>因裝備故障造成的滑雪時間損失，本店不負額外賠償責任</li>
+                        <li>{t('terms.equipmentItem1')}</li>
+                        <li>{t('terms.equipmentItem2')}</li>
+                        <li>{t('terms.equipmentItem3')}</li>
                       </ul>
                     </div>
 
                     <div>
-                      <p><strong>九、免責聲明</strong></p>
-                      <p className="ml-4 text-xs">本公司不負責：</p>
+                      <p><strong>{t('terms.section9Title')}</strong></p>
+                      <p className="ml-4 text-xs">{t('terms.disclaimerDesc')}</p>
                       <ul className="list-disc list-inside ml-8 space-y-1 text-xs">
-                        <li>租賃期間的人身傷害</li>
-                        <li>物品遺失或被盗</li>
-                        <li>因天災或不可抗力因素造成的損失</li>
-                        <li>因個人技術不當使用造成的裝備損壞</li>
+                        <li>{t('terms.disclaimerItem1')}</li>
+                        <li>{t('terms.disclaimerItem2')}</li>
+                        <li>{t('terms.disclaimerItem3')}</li>
+                        <li>{t('terms.disclaimerItem4')}</li>
                       </ul>
                     </div>
 
                     <div>
-                      <p><strong>十、個人資料保護</strong></p>
+                      <p><strong>{t('terms.section10Title')}</strong></p>
                       <ul className="list-disc list-inside ml-4 space-y-1 text-xs">
-                        <li>僅用於租賃契約相關用途</li>
-                        <li>原則上不對第三方公開</li>
-                        <li>如需更改資料可聯繫本公司</li>
+                        <li>{t('terms.privacyItem1')}</li>
+                        <li>{t('terms.privacyItem2')}</li>
+                        <li>{t('terms.privacyItem3')}</li>
                       </ul>
                     </div>
 
                     <div>
-                      <p><strong>十一、法律適用</strong></p>
+                      <p><strong>{t('terms.section11Title')}</strong></p>
                       <ul className="list-disc list-inside ml-4 space-y-1 text-xs">
-                        <li>本契約適用日本國法律</li>
-                        <li>如有爭議以富良野簡易裁判所為管轄法院</li>
+                        <li>{t('terms.legalItem1')}</li>
+                        <li>{t('terms.legalItem2')}</li>
                       </ul>
                     </div>
 
                     <div className="bg-orange-50 p-2 rounded border-l-4 border-orange-400">
-                      <p><strong>⚠️ 注意事項</strong></p>
+                      <p><strong>⚠️ {t('terms.importantNotes')}</strong></p>
                       <ul className="list-disc list-inside ml-4 space-y-1 text-xs">
-                        <li>所有服務以現場實際狀況為準</li>
-                        <li>如有未盡事宜，依本公司規範辦理</li>
-                        <li>預約前請詳閱以上規定</li>
+                        <li>{t('terms.importantItem1')}</li>
+                        <li>{t('terms.importantItem2')}</li>
+                        <li>{t('terms.importantItem3')}</li>
                       </ul>
                     </div>
                   </div>
                 </div>
-                
+
                 <p className="mt-4 text-center font-semibold text-gray-800 bg-blue-100 p-3 rounded-lg">
-                  感謝您選擇Snow Force，祝您滑雪愉快！<br/>
-                  如有任何問題請聯繫Line客服
+                  {t('terms.thankYou')}<br/>
+                  {t('terms.contactLine')}
                 </p>
               </div>
               
