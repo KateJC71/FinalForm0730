@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { submitReservation } from '../services/api';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 const initialPerson = {
   name: '',
@@ -277,6 +279,7 @@ function getItemLabel(p: any, days: number) {
 
 const Reservation: React.FC = () => {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const [step, setStep] = useState(1);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [startDate, setStartDate] = useState('');
@@ -908,21 +911,31 @@ const Reservation: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto py-8">
-      <h1 className="text-3xl font-bold text-snow-900 mb-8 text-center">雪具預約</h1>
+      {/* 右上角語言切換器 */}
+      <div className="flex justify-end mb-4">
+        <LanguageSwitcher variant="small" />
+      </div>
+
+      {/* 第一頁中間的大型語言切換器 */}
+      {step === 1 && (
+        <LanguageSwitcher variant="large" />
+      )}
+
+      <h1 className="text-3xl font-bold text-snow-900 mb-8 text-center">{t('reservation.title')}</h1>
       <div className="card">
         <form className="space-y-6" onSubmit={handleSubmit}>
           {step === 1 && (
             <>
               <div>
-                <label className="block text-sm font-medium text-snow-700 mb-2">開始日期</label>
+                <label className="block text-sm font-medium text-snow-700 mb-2">{t('reservation.step1.startDate')}</label>
                 <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="input" min={getMinReservationDate()} required />
               </div>
               <div>
-                <label className="block text-sm font-medium text-snow-700 mb-2">結束日期</label>
+                <label className="block text-sm font-medium text-snow-700 mb-2">{t('reservation.step1.endDate')}</label>
                 <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="input" min={startDate || getMinReservationDate()} required />
               </div>
               <div className="mb-4">
-                <label className="block mb-1">預約人數</label>
+                <label className="block mb-1">{t('reservation.step1.numberOfPeople')}</label>
                 <input
                   type="number"
                   min={1}
@@ -933,33 +946,33 @@ const Reservation: React.FC = () => {
                   required
                 />
                 <p className="text-sm text-gray-600 mt-1">
-                  ※ 12歲（含）以下為兒童計價，13歲以上為成人計價
+                  {t('reservation.step1.childPriceNote')}
                 </p>
               </div>
               <div className="mb-4">
-                <label className="block mb-1">租借地點</label>
+                <label className="block mb-1">{t('reservation.step1.rentLocation')}</label>
                 <select className="input" value={rentStore} onChange={e => {
                   setRentStore(e.target.value);
                   // 當店鋪變更時，清空取件時間讓用戶重新選擇
                   setPickupTime('');
                 }} required>
-                  <option value="" disabled style={{ color: '#aaa' }}>請選擇租借地點</option>
-                  {storeOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                  <option value="" disabled style={{ color: '#aaa' }}>{t('reservation.step1.selectRentLocation')}</option>
+                  {storeOptions.map(opt => <option key={opt} value={opt}>{i18n.language === 'en' ? t(`options.stores.${opt === '富良野店' ? 'furano' : 'asahikawa'}`) : opt}</option>)}
                 </select>
               </div>
               <div className="mb-4">
-                <label className="block mb-1">歸還地點</label>
+                <label className="block mb-1">{t('reservation.step1.returnLocation')}</label>
                 <select className="input" value={returnStore} onChange={e => setReturnStore(e.target.value)} required>
-                  <option value="" disabled style={{ color: '#aaa' }}>請選擇歸還地點</option>
+                  <option value="" disabled style={{ color: '#aaa' }}>{t('reservation.step1.selectReturnLocation')}</option>
                   {storeOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
               </div>
               
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mt-6">
-                <h3 className="font-semibold text-blue-800 mb-3">取件時間安排</h3>
+                <h3 className="font-semibold text-blue-800 mb-3">{t('reservation.step1.pickupArrangement')}</h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-blue-700 mb-2">取件日期</label>
+                    <label className="block text-sm font-medium text-blue-700 mb-2">{t('reservation.step1.pickupDate')}</label>
                     <input 
                       type="date" 
                       value={pickupDate} 
@@ -978,14 +991,14 @@ const Reservation: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-blue-700 mb-2">取件時間</label>
-                    <select 
-                      className="input" 
-                      value={pickupTime} 
-                      onChange={e => setPickupTime(e.target.value)} 
+                    <label className="block text-sm font-medium text-blue-700 mb-2">{t('reservation.step1.pickupTime')}</label>
+                    <select
+                      className="input"
+                      value={pickupTime}
+                      onChange={e => setPickupTime(e.target.value)}
                       required
                     >
-                      <option value="" disabled style={{ color: '#aaa' }}>請選擇取件時間</option>
+                      <option value="" disabled style={{ color: '#aaa' }}>{t('reservation.step1.selectPickupTime')}</option>
                       {getAvailablePickupTimes(pickupDate, startDate, rentStore).map(time => (
                         <option key={time} value={time}>{time}</option>
                       ))}
@@ -1360,40 +1373,40 @@ const Reservation: React.FC = () => {
           {step === 5 && (
             <div className="text-center space-y-6 py-12">
               <img src="/logo.png" alt="Logo" className="h-16 w-16 mx-auto mb-4" />
-              <div className="text-2xl font-bold text-primary-600">預約成功！</div>
-              
+              <div className="text-2xl font-bold text-primary-600">{t('reservation.step5.title')}</div>
+
               {reservationResponse && (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-6 max-w-md mx-auto">
-                  <h3 className="text-lg font-semibold text-green-800 mb-4">預約詳情</h3>
+                  <h3 className="text-lg font-semibold text-green-800 mb-4">{t('reservation.step5.reservationDetails')}</h3>
                   {(reservationResponse.reservation_number || reservationResponse.reservation_id) && (
                     <div className="text-sm text-green-700 mb-2">
-                      <strong>預約編號：</strong> {reservationResponse.reservation_number || reservationResponse.reservation_id}
+                      <strong>{t('reservation.step5.reservationNumber')}：</strong> {reservationResponse.reservation_number || reservationResponse.reservation_id}
                     </div>
                   )}
                   <div className="text-sm text-green-700 mb-2">
-                    <strong>預約日期：</strong> {startDate} 至 {endDate}
+                    <strong>{t('reservation.step5.reservationPeriod')}：</strong> {startDate} {t('reservation.step5.to')} {endDate}
                   </div>
                   <div className="text-sm text-green-700 mb-2">
-                    <strong>預約人：</strong> {applicant.name}
+                    <strong>{t('reservation.step5.applicant')}：</strong> {applicant.name}
                   </div>
                   <div className="text-sm text-green-700 mb-2">
-                    <strong>總價：</strong> ¥{reservationResponse.total_price || price}
+                    <strong>{t('reservation.step5.totalPrice')}：</strong> ¥{reservationResponse.total_price || price}
                   </div>
                   <div className="text-sm text-green-700">
-                    <strong>人數：</strong> {persons.length}人
+                    <strong>{t('reservation.step5.numberOfPeople')}：</strong> {persons.length}{t('reservation.step5.people')}
                   </div>
                 </div>
               )}
-              
+
               <div className="text-snow-700">
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center gap-3">
                   <Mail className="h-5 w-5 text-blue-600" />
                   <div className="text-blue-800">
-                    感謝您的預約，系統將會寄送預約確認信至您的電子信箱，請留意信件。
+                    {t('reservation.step5.emailNotice')}
                   </div>
                 </div>
               </div>
-              
+
               <button
                 onClick={() => {
                   resetFormData();
@@ -1401,24 +1414,24 @@ const Reservation: React.FC = () => {
                 }}
                 className="mt-4 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
               >
-                返回首頁
+                {t('common.backToHome')}
               </button>
             </div>
           )}
           {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">{error}</div>}
           <div className="flex justify-between">
             {step > 1 && step < 5 && (
-              <button 
-                type="button" 
-                className="btn-secondary" 
+              <button
+                type="button"
+                className="btn-secondary"
                 onClick={handlePrev}
                 disabled={isSubmitting}
               >
-                上一步
+                {t('common.previous')}
               </button>
             )}
             {step < 3 && (
-              <button type="button" className="btn-primary ml-auto" onClick={handleNextStep}>下一步</button>
+              <button type="button" className="btn-primary ml-auto" onClick={handleNextStep}>{t('common.next')}</button>
             )}
             {step === 3 && (
               <button
@@ -1429,7 +1442,7 @@ const Reservation: React.FC = () => {
                   for (let i = 0; i < persons.length; i++) {
                     const missing = getMissingFields(persons[i]);
                     if (missing.length > 0) {
-                      setError(`第${i + 1}位租借者缺少：${missing.join('、')}`);
+                      setError(t('reservation.errors.renterMissing', { number: i + 1 }) + missing.join('、'));
                       return;
                     }
                   }
@@ -1438,19 +1451,19 @@ const Reservation: React.FC = () => {
                   setStep(4);
                 }}
               >
-                預覽資料
+                {t('common.preview')}
               </button>
             )}
             {step === 4 && (
-              <button 
-                type="submit" 
-                className="btn-primary ml-auto flex items-center gap-2" 
+              <button
+                type="submit"
+                className="btn-primary ml-auto flex items-center gap-2"
                 disabled={isSubmitting}
               >
                 {isSubmitting && (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                 )}
-                {isSubmitting ? '處理中...' : '確認送出'}
+                {isSubmitting ? t('common.processing') : t('common.submit')}
               </button>
             )}
           </div>
