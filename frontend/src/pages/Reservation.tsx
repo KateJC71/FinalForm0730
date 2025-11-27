@@ -287,6 +287,7 @@ const Reservation: React.FC = () => {
   const [people, setPeople] = useState(1);
   const [persons, setPersons] = useState([{ ...initialPerson }]);
   const [error, setError] = useState('');
+  const [invalidFields, setInvalidFields] = useState<Set<string>>(new Set());
   const [price, setPrice] = useState(0);
   const [detail, setDetail] = useState<any[]>([]);
   const [rentStore, setRentStore] = useState('');
@@ -730,35 +731,54 @@ const Reservation: React.FC = () => {
   // 驗證 applicant 必填欄位
   const handleNextStep = () => {
     setError('');
+    const newInvalidFields = new Set<string>();
+
     if (step === 1) {
       // 第一步檢查日期、地點和取件資訊
-      const missingFields = getMissingStep1Fields({
-        startDate,
-        endDate,
-        rentStore,
-        returnStore,
-        pickupDate,
-        pickupTime
-      });
-      
+      const fieldMap: Record<string, string> = {
+        'startDate': '開始日期',
+        'endDate': '結束日期',
+        'rentStore': '租借地點',
+        'returnStore': '歸還地點',
+        'pickupDate': '取件日期',
+        'pickupTime': '取件時間'
+      };
+
+      const missingFields: string[] = [];
+      if (!startDate) { missingFields.push('開始日期'); newInvalidFields.add('startDate'); }
+      if (!endDate) { missingFields.push('結束日期'); newInvalidFields.add('endDate'); }
+      if (!rentStore) { missingFields.push('租借地點'); newInvalidFields.add('rentStore'); }
+      if (!returnStore) { missingFields.push('歸還地點'); newInvalidFields.add('returnStore'); }
+      if (!pickupDate) { missingFields.push('取件日期'); newInvalidFields.add('pickupDate'); }
+      if (!pickupTime) { missingFields.push('取件時間'); newInvalidFields.add('pickupTime'); }
+
       if (missingFields.length > 0) {
+        setInvalidFields(newInvalidFields);
         setError(`請填寫以下欄位：${missingFields.join('、')}`);
         return;
       }
-      
+
+      setInvalidFields(new Set());
       setStep(step + 1);
       return;
     }
     if (step === 2) {
       // 檢查申請人資料
-      const missingFields = getMissingApplicantFields(applicant);
-      
+      const missingFields: string[] = [];
+      if (!applicant.name) { missingFields.push('姓名'); newInvalidFields.add('applicant.name'); }
+      if (!applicant.phone) { missingFields.push('電話'); newInvalidFields.add('applicant.phone'); }
+      if (!applicant.email) { missingFields.push('Email'); newInvalidFields.add('applicant.email'); }
+      if (!applicant.messenger) { missingFields.push('通訊軟體'); newInvalidFields.add('applicant.messenger'); }
+      if (!applicant.messengerId) { missingFields.push('通訊軟體ID'); newInvalidFields.add('applicant.messengerId'); }
+      if (!applicant.hotel) { missingFields.push('住宿飯店'); newInvalidFields.add('applicant.hotel'); }
+
       if (missingFields.length > 0) {
+        setInvalidFields(newInvalidFields);
         setError(`申請人資料缺少：${missingFields.join('、')}`);
         return;
       }
-      
-      // shuttleMode 不需驗證 shuttle 細項
+
+      setInvalidFields(new Set());
       setStep(step + 1);
       return;
     }
@@ -768,15 +788,38 @@ const Reservation: React.FC = () => {
       console.log(`第${i + 1}位租借者`, persons[i]);
       console.log(`缺漏欄位`, missing);
       if (missing.length > 0) {
+        // Add invalid field markers for this person
+        const requiredFields = ['name', 'age', 'gender', 'height', 'weight', 'footSize', 'level', 'skiType', 'boardType', 'equipType'];
+        requiredFields.forEach(field => {
+          if (!persons[i][field]) {
+            newInvalidFields.add(`person.${i}.${field}`);
+          }
+        });
+        if (!persons[i].equipType || !persons[i].equipType.includes('大全配')) {
+          if (!persons[i].clothingType) newInvalidFields.add(`person.${i}.clothingType`);
+          if (!persons[i].helmetOnly) newInvalidFields.add(`person.${i}.helmetOnly`);
+        }
+        if (!persons[i].fastWear) newInvalidFields.add(`person.${i}.fastWear`);
+        if (!persons[i].protectiveGear) newInvalidFields.add(`person.${i}.protectiveGear`);
+
+        setInvalidFields(newInvalidFields);
         setError(`第${i + 1}位租借者缺少：${missing.join('、')}`);
         return;
       }
     }
+    setInvalidFields(new Set());
     setStep(step + 1);
   };
 
   // 上一步
   const handlePrev = () => setStep(step - 1);
+
+  // Helper function to get input class with error styling
+  const getInputClass = (fieldKey: string, baseClass: string = 'input') => {
+    return invalidFields.has(fieldKey)
+      ? `${baseClass} border-2 border-red-500 focus:border-red-600`
+      : baseClass;
+  };
 
   // 送出預約（這裡僅顯示總價，實際可串接API）
   // 重置所有表單狀態
@@ -945,13 +988,13 @@ const Reservation: React.FC = () => {
                 <label className="block text-sm font-medium text-snow-700 mb-2">
                   {t('reservation.step1.startDate')} <span className="text-red-600">*</span>
                 </label>
-                <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="input" min={getMinReservationDate()} required />
+                <input type="date" value={startDate} onChange={e => { setStartDate(e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete('startDate'); return next; }); }} className={getInputClass('startDate')} min={getMinReservationDate()} required />
               </div>
               <div>
                 <label className="block text-sm font-medium text-snow-700 mb-2">
                   {t('reservation.step1.endDate')} <span className="text-red-600">*</span>
                 </label>
-                <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="input" min={startDate || getMinReservationDate()} required />
+                <input type="date" value={endDate} onChange={e => { setEndDate(e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete('endDate'); return next; }); }} className={getInputClass('endDate')} min={startDate || getMinReservationDate()} required />
               </div>
               <div className="mb-4">
                 <label className="block mb-1">
@@ -974,8 +1017,9 @@ const Reservation: React.FC = () => {
                 <label className="block mb-1">
                   {t('reservation.step1.rentLocation')} <span className="text-red-600">*</span>
                 </label>
-                <select className="input" value={rentStore} onChange={e => {
+                <select className={getInputClass('rentStore')} value={rentStore} onChange={e => {
                   setRentStore(e.target.value);
+                  setInvalidFields(prev => { const next = new Set(prev); next.delete('rentStore'); return next; });
                   // 當店鋪變更時，清空取件時間讓用戶重新選擇
                   setPickupTime('');
                 }} required>
@@ -987,12 +1031,12 @@ const Reservation: React.FC = () => {
                 <label className="block mb-1">
                   {t('reservation.step1.returnLocation')} <span className="text-red-600">*</span>
                 </label>
-                <select className="input" value={returnStore} onChange={e => setReturnStore(e.target.value)} required>
+                <select className={getInputClass('returnStore')} value={returnStore} onChange={e => { setReturnStore(e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete('returnStore'); return next; }); }} required>
                   <option value="" disabled style={{ color: '#aaa' }}>{t('reservation.step1.selectReturnLocation')}</option>
                   {storeOptions.map(opt => <option key={opt} value={opt}>{i18n.language === 'en' ? t(`options.stores.${opt === '富良野店' ? 'furano' : 'asahikawa'}`) : opt}</option>)}
                 </select>
               </div>
-              
+
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mt-6">
                 <h3 className="font-semibold text-blue-800 mb-3">{t('reservation.step1.pickupArrangement')}</h3>
                 <div className="grid md:grid-cols-2 gap-4">
@@ -1005,13 +1049,14 @@ const Reservation: React.FC = () => {
                       value={pickupDate}
                       onChange={e => {
                         setPickupDate(e.target.value);
+                        setInvalidFields(prev => { const next = new Set(prev); next.delete('pickupDate'); return next; });
                         // 如果選擇的日期是前一天，清空時間選擇讓用戶重新選擇
                         const range = getPickupDateRange(startDate);
                         if (e.target.value === range.min) {
                           setPickupTime('');
                         }
                       }}
-                      className="input"
+                      className={getInputClass('pickupDate')}
                       min={startDate ? getPickupDateRange(startDate).min : ''}
                       max={startDate || ''}
                       required
@@ -1022,9 +1067,9 @@ const Reservation: React.FC = () => {
                       {t('reservation.step1.pickupTime')} <span className="text-red-600">*</span>
                     </label>
                     <select
-                      className="input"
+                      className={getInputClass('pickupTime')}
                       value={pickupTime}
-                      onChange={e => setPickupTime(e.target.value)}
+                      onChange={e => { setPickupTime(e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete('pickupTime'); return next; }); }}
                       required
                     >
                       <option value="" disabled style={{ color: '#aaa' }}>{t('reservation.step1.selectPickupTime')}</option>
@@ -1079,7 +1124,7 @@ const Reservation: React.FC = () => {
                 <label className="block text-sm font-medium text-snow-700 mb-2">
                   {t('reservation.step2.name')} <span className="text-red-600">*</span>
                 </label>
-                <input className="input" placeholder={t('reservation.step2.name')} value={applicant.name} onChange={e => setApplicant({ ...applicant, name: e.target.value })} required />
+                <input className={getInputClass('applicant.name')} placeholder={t('reservation.step2.name')} value={applicant.name} onChange={e => { setApplicant({ ...applicant, name: e.target.value }); setInvalidFields(prev => { const next = new Set(prev); next.delete('applicant.name'); return next; }); }} required />
               </div>
               <div>
                 <label className="block text-sm font-medium text-snow-700 mb-2">
@@ -1089,32 +1134,32 @@ const Reservation: React.FC = () => {
                   <select className="input w-28" value={applicant.countryCode} onChange={e => setApplicant({ ...applicant, countryCode: e.target.value })}>
                     {countryCodes.map(opt => <option key={opt.code} value={opt.code}>{opt.label}</option>)}
                   </select>
-                  <input className="input flex-1" placeholder={t('reservation.step2.phone')} value={applicant.phone} onChange={e => setApplicant({ ...applicant, phone: e.target.value })} required />
+                  <input className={getInputClass('applicant.phone', 'input flex-1')} placeholder={t('reservation.step2.phone')} value={applicant.phone} onChange={e => { setApplicant({ ...applicant, phone: e.target.value }); setInvalidFields(prev => { const next = new Set(prev); next.delete('applicant.phone'); return next; }); }} required />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-snow-700 mb-2">
                   {t('reservation.step2.email')} <span className="text-red-600">*</span>
                 </label>
-                <input className="input" placeholder={t('reservation.step2.email')} type="email" value={applicant.email} onChange={e => setApplicant({ ...applicant, email: e.target.value })} required />
+                <input className={getInputClass('applicant.email')} placeholder={t('reservation.step2.email')} type="email" value={applicant.email} onChange={e => { setApplicant({ ...applicant, email: e.target.value }); setInvalidFields(prev => { const next = new Set(prev); next.delete('applicant.email'); return next; }); }} required />
               </div>
               <div>
                 <label className="block text-sm font-medium text-snow-700 mb-2">
                   {t('reservation.step2.messenger')} / {t('reservation.step2.messengerId')} <span className="text-red-600">*</span>
                 </label>
                 <div className="flex gap-2">
-                  <select className="input w-32" value={applicant.messenger} onChange={e => setApplicant({ ...applicant, messenger: e.target.value })} required>
+                  <select className={getInputClass('applicant.messenger', 'input w-32')} value={applicant.messenger} onChange={e => { setApplicant({ ...applicant, messenger: e.target.value }); setInvalidFields(prev => { const next = new Set(prev); next.delete('applicant.messenger'); return next; }); }} required>
                     <option value="">{t('reservation.step2.messenger')}</option>
                     {messengerTypes.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
-                  <input className="input flex-1" placeholder={t('reservation.step2.messengerId')} value={applicant.messengerId} onChange={e => setApplicant({ ...applicant, messengerId: e.target.value })} required />
+                  <input className={getInputClass('applicant.messengerId', 'input flex-1')} placeholder={t('reservation.step2.messengerId')} value={applicant.messengerId} onChange={e => { setApplicant({ ...applicant, messengerId: e.target.value }); setInvalidFields(prev => { const next = new Set(prev); next.delete('applicant.messengerId'); return next; }); }} required />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-snow-700 mb-2">
                   {t('reservation.step2.hotel')} <span className="text-red-600">*</span>
                 </label>
-                <input className="input" placeholder={t('reservation.step2.hotel')} value={applicant.hotel} onChange={e => setApplicant({ ...applicant, hotel: e.target.value })} required />
+                <input className={getInputClass('applicant.hotel')} placeholder={t('reservation.step2.hotel')} value={applicant.hotel} onChange={e => { setApplicant({ ...applicant, hotel: e.target.value }); setInvalidFields(prev => { const next = new Set(prev); next.delete('applicant.hotel'); return next; }); }} required />
               </div>
               <div>
                 <div className="relative">
@@ -1285,48 +1330,118 @@ const Reservation: React.FC = () => {
                 <div key={idx} className="border rounded-lg p-4 mb-2 bg-snow-50">
                   <div className="font-semibold mb-2">{t('reservation.step3.renterNumber', { number: idx + 1 })}</div>
                   <div className="grid md:grid-cols-2 gap-4">
-                    <input className="input" placeholder={t('reservation.step3.name')} value={p.name} onChange={e => handlePersonChange(idx, 'name', e.target.value)} required />
-                    <input className="input" placeholder={t('reservation.step3.age')} type="number" min={1} max={100} value={p.age} onChange={e => handlePersonChange(idx, 'age', e.target.value)} required />
-                    <select className="input" value={p.gender} onChange={e => handlePersonChange(idx, 'gender', e.target.value)} required>
-                      <option value="">{t('reservation.step3.gender')}</option>
-                      <option value="男">{t('reservation.step3.male')}</option>
-                      <option value="女">{t('reservation.step3.female')}</option>
-                    </select>
-                    <input className="input" placeholder={t('reservation.step3.height')} type="number" min={50} max={250} value={p.height} onChange={e => handlePersonChange(idx, 'height', e.target.value)} required />
-                    <input className="input" placeholder={t('reservation.step3.weight')} type="number" min={10} max={200} value={p.weight} onChange={e => handlePersonChange(idx, 'weight', e.target.value)} required />
-                    <input className="input" placeholder={t('reservation.step3.footSize')} type="number" min={15} max={35} value={p.footSize} onChange={e => handlePersonChange(idx, 'footSize', e.target.value)} required />
-                    <select className="input" value={p.level} onChange={e => handlePersonChange(idx, 'level', e.target.value)} required>
-                      <option value="">{t('reservation.step3.skiLevel')}</option>
-                      {levels.map(l => <option key={l} value={l}>{i18n.language === 'en' ? t(`options.levels.${l === '初學者' ? 'beginner' : l === '經驗者' ? 'experienced' : 'advanced'}`) : l}</option>)}
-                    </select>
-                    <select className="input" value={p.skiType} onChange={e => handlePersonChange(idx, 'skiType', e.target.value)} required>
-                      <option value="">{t('reservation.step3.skiType')}</option>
-                      {skiTypes.map(st => <option key={st} value={st}>{i18n.language === 'en' ? t(`options.skiTypes.${st === '單板' ? 'snowboard' : 'ski'}`) : st}</option>)}
-                    </select>
-                    <select className="input" value={p.boardType} onChange={e => handlePersonChange(idx, 'boardType', e.target.value)} required>
-                      <option value="">{t('reservation.step3.boardType')}</option>
-                      {boardTypes.map(bt => <option key={bt} value={bt}>{i18n.language === 'en' ? t(`options.boardTypes.${bt.includes('一般') ? 'standard' : bt.includes('進階') ? 'advanced' : 'powder'}`) : bt}</option>)}
-                    </select>
-                    <select className="input" value={p.equipType} onChange={e => handlePersonChange(idx, 'equipType', e.target.value)} required>
-                      <option value="">{t('reservation.step3.equipType')}</option>
-                      {equipTypes.map(et => <option key={et} value={et}>{i18n.language === 'en' ? t(`options.equipTypes.${et.includes('大全配') ? 'fullSet' : et.includes('板+靴') ? 'boardBoots' : 'boardOnly'}`) : et}</option>)}
-                    </select>
-                    <select className="input" value={p.clothingType} onChange={e => handlePersonChange(idx, 'clothingType', e.target.value)} required disabled={p.equipType.includes('大全配')}>
-                      <option value="">{t('reservation.step3.clothingRental')}</option>
-                      {clothingTypes.map(ct => <option key={ct} value={ct}>{i18n.language === 'en' ? t(`options.clothingTypes.${ct === '單租雪衣' ? 'jacketOnly' : ct === '單租雪褲' ? 'pantsOnly' : ct.includes('整套') ? 'fullSet' : 'no'}`) : ct}</option>)}
-                    </select>
-                    <select className="input" value={p.helmetOnly} onChange={e => handlePersonChange(idx, 'helmetOnly', e.target.value)} required disabled={p.equipType.includes('大全配')}>
-                      <option value="">{t('reservation.step3.helmetOnly')}</option>
-                      {yesNo.map(yn => <option key={yn} value={yn}>{i18n.language === 'en' ? (yn === '是' ? t('common.yes') : t('common.no')) : yn}</option>)}
-                    </select>
-                    <select className="input" value={p.fastWear} onChange={e => handlePersonChange(idx, 'fastWear', e.target.value)} required disabled={p.skiType === '雙板'}>
-                      <option value="">{t('reservation.step3.faseUpgrade')}</option>
-                      {yesNo.map(yn => <option key={yn} value={yn}>{i18n.language === 'en' ? (yn === '是' ? t('common.yes') : t('common.no')) : yn}</option>)}
-                    </select>
-                    <select className="input" value={p.protectiveGear} onChange={e => handlePersonChange(idx, 'protectiveGear', e.target.value)} required>
-                      <option value="">{t('reservation.step3.protectiveGear')}</option>
-                      {protectiveGearOptions.map(pg => <option key={pg} value={pg}>{i18n.language === 'en' ? t(`options.protectiveGear.${pg === '否' ? 'no' : pg.includes('全配') ? 'fullSet' : pg === '護腕' ? 'wrist' : pg === '護膝' ? 'knee' : 'hip'}`) : pg}</option>)}
-                    </select>
+                    <div>
+                      <label className="block text-sm font-medium text-snow-700 mb-2">
+                        {t('reservation.step3.name')} <span className="text-red-600">*</span>
+                      </label>
+                      <input className={getInputClass(`person.${idx}.name`)} placeholder={t('reservation.step3.name')} value={p.name} onChange={e => { handlePersonChange(idx, 'name', e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete(`person.${idx}.name`); return next; }); }} required />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-snow-700 mb-2">
+                        {t('reservation.step3.age')} <span className="text-red-600">*</span>
+                      </label>
+                      <input className={getInputClass(`person.${idx}.age`)} placeholder={t('reservation.step3.age')} type="number" min={1} max={100} value={p.age} onChange={e => { handlePersonChange(idx, 'age', e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete(`person.${idx}.age`); return next; }); }} required />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-snow-700 mb-2">
+                        {t('reservation.step3.gender')} <span className="text-red-600">*</span>
+                      </label>
+                      <select className={getInputClass(`person.${idx}.gender`)} value={p.gender} onChange={e => { handlePersonChange(idx, 'gender', e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete(`person.${idx}.gender`); return next; }); }} required>
+                        <option value="">{t('reservation.step3.gender')}</option>
+                        <option value="男">{t('reservation.step3.male')}</option>
+                        <option value="女">{t('reservation.step3.female')}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-snow-700 mb-2">
+                        {t('reservation.step3.height')} <span className="text-red-600">*</span>
+                      </label>
+                      <input className={getInputClass(`person.${idx}.height`)} placeholder={t('reservation.step3.height')} type="number" min={50} max={250} value={p.height} onChange={e => { handlePersonChange(idx, 'height', e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete(`person.${idx}.height`); return next; }); }} required />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-snow-700 mb-2">
+                        {t('reservation.step3.weight')} <span className="text-red-600">*</span>
+                      </label>
+                      <input className={getInputClass(`person.${idx}.weight`)} placeholder={t('reservation.step3.weight')} type="number" min={10} max={200} value={p.weight} onChange={e => { handlePersonChange(idx, 'weight', e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete(`person.${idx}.weight`); return next; }); }} required />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-snow-700 mb-2">
+                        {t('reservation.step3.footSize')} <span className="text-red-600">*</span>
+                      </label>
+                      <input className={getInputClass(`person.${idx}.footSize`)} placeholder={t('reservation.step3.footSize')} type="number" min={15} max={35} value={p.footSize} onChange={e => { handlePersonChange(idx, 'footSize', e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete(`person.${idx}.footSize`); return next; }); }} required />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-snow-700 mb-2">
+                        {t('reservation.step3.skiLevel')} <span className="text-red-600">*</span>
+                      </label>
+                      <select className={getInputClass(`person.${idx}.level`)} value={p.level} onChange={e => { handlePersonChange(idx, 'level', e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete(`person.${idx}.level`); return next; }); }} required>
+                        <option value="">{t('reservation.step3.skiLevel')}</option>
+                        {levels.map(l => <option key={l} value={l}>{i18n.language === 'en' ? t(`options.levels.${l === '初學者' ? 'beginner' : l === '經驗者' ? 'experienced' : 'advanced'}`) : l}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-snow-700 mb-2">
+                        {t('reservation.step3.skiType')} <span className="text-red-600">*</span>
+                      </label>
+                      <select className={getInputClass(`person.${idx}.skiType`)} value={p.skiType} onChange={e => { handlePersonChange(idx, 'skiType', e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete(`person.${idx}.skiType`); return next; }); }} required>
+                        <option value="">{t('reservation.step3.skiType')}</option>
+                        {skiTypes.map(st => <option key={st} value={st}>{i18n.language === 'en' ? t(`options.skiTypes.${st === '單板' ? 'snowboard' : 'ski'}`) : st}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-snow-700 mb-2">
+                        {t('reservation.step3.boardType')} <span className="text-red-600">*</span>
+                      </label>
+                      <select className={getInputClass(`person.${idx}.boardType`)} value={p.boardType} onChange={e => { handlePersonChange(idx, 'boardType', e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete(`person.${idx}.boardType`); return next; }); }} required>
+                        <option value="">{t('reservation.step3.boardType')}</option>
+                        {boardTypes.map(bt => <option key={bt} value={bt}>{i18n.language === 'en' ? t(`options.boardTypes.${bt.includes('一般') ? 'standard' : bt.includes('進階') ? 'advanced' : 'powder'}`) : bt}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-snow-700 mb-2">
+                        {t('reservation.step3.equipType')} <span className="text-red-600">*</span>
+                      </label>
+                      <select className={getInputClass(`person.${idx}.equipType`)} value={p.equipType} onChange={e => { handlePersonChange(idx, 'equipType', e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete(`person.${idx}.equipType`); return next; }); }} required>
+                        <option value="">{t('reservation.step3.equipType')}</option>
+                        {equipTypes.map(et => <option key={et} value={et}>{i18n.language === 'en' ? t(`options.equipTypes.${et.includes('大全配') ? 'fullSet' : et.includes('板+靴') ? 'boardBoots' : 'boardOnly'}`) : et}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-snow-700 mb-2">
+                        {t('reservation.step3.clothingRental')} {!p.equipType.includes('大全配') && <span className="text-red-600">*</span>}
+                      </label>
+                      <select className={getInputClass(`person.${idx}.clothingType`)} value={p.clothingType} onChange={e => { handlePersonChange(idx, 'clothingType', e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete(`person.${idx}.clothingType`); return next; }); }} required disabled={p.equipType.includes('大全配')}>
+                        <option value="">{t('reservation.step3.clothingRental')}</option>
+                        {clothingTypes.map(ct => <option key={ct} value={ct}>{i18n.language === 'en' ? t(`options.clothingTypes.${ct === '單租雪衣' ? 'jacketOnly' : ct === '單租雪褲' ? 'pantsOnly' : ct.includes('整套') ? 'fullSet' : 'no'}`) : ct}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-snow-700 mb-2">
+                        {t('reservation.step3.helmetOnly')} {!p.equipType.includes('大全配') && <span className="text-red-600">*</span>}
+                      </label>
+                      <select className={getInputClass(`person.${idx}.helmetOnly`)} value={p.helmetOnly} onChange={e => { handlePersonChange(idx, 'helmetOnly', e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete(`person.${idx}.helmetOnly`); return next; }); }} required disabled={p.equipType.includes('大全配')}>
+                        <option value="">{t('reservation.step3.helmetOnly')}</option>
+                        {yesNo.map(yn => <option key={yn} value={yn}>{i18n.language === 'en' ? (yn === '是' ? t('common.yes') : t('common.no')) : yn}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-snow-700 mb-2">
+                        {t('reservation.step3.faseUpgrade')} <span className="text-red-600">*</span>
+                      </label>
+                      <select className={getInputClass(`person.${idx}.fastWear`)} value={p.fastWear} onChange={e => { handlePersonChange(idx, 'fastWear', e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete(`person.${idx}.fastWear`); return next; }); }} required disabled={p.skiType === '雙板'}>
+                        <option value="">{t('reservation.step3.faseUpgrade')}</option>
+                        {yesNo.map(yn => <option key={yn} value={yn}>{i18n.language === 'en' ? (yn === '是' ? t('common.yes') : t('common.no')) : yn}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-snow-700 mb-2">
+                        {t('reservation.step3.protectiveGear')} <span className="text-red-600">*</span>
+                      </label>
+                      <select className={getInputClass(`person.${idx}.protectiveGear`)} value={p.protectiveGear} onChange={e => { handlePersonChange(idx, 'protectiveGear', e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete(`person.${idx}.protectiveGear`); return next; }); }} required>
+                        <option value="">{t('reservation.step3.protectiveGear')}</option>
+                        {protectiveGearOptions.map(pg => <option key={pg} value={pg}>{i18n.language === 'en' ? t(`options.protectiveGear.${pg === '否' ? 'no' : pg.includes('全配') ? 'fullSet' : pg === '護腕' ? 'wrist' : pg === '護膝' ? 'knee' : 'hip'}`) : pg}</option>)}
+                      </select>
+                    </div>
                   </div>
                 </div>
               ))}
