@@ -156,8 +156,19 @@ export async function submitReservation(data: any) {
   if (!res.ok) {
     const errorData = await res.json();
     console.error('Backend error:', errorData);
-    // 提取後端返回的具體錯誤訊息
-    const errorMessage = errorData.error || errorData.message || errorData.details || '送出失敗，請稍後再試';
+
+    let errorMessage = '送出失敗，請稍後再試';
+
+    // 檢查是否有 errors 陣列（express-validator 格式）
+    if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+      // 提取所有錯誤訊息並合併
+      errorMessage = errorData.errors.map((err: any) => err.msg || err.message).join('；');
+    }
+    // 檢查其他常見的錯誤欄位
+    else if (errorData.error || errorData.message || errorData.details) {
+      errorMessage = errorData.error || errorData.message || errorData.details;
+    }
+
     throw new Error(errorMessage);
   }
   return res.json();
