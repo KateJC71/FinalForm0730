@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail } from 'lucide-react';
+import { Mail, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { submitReservation } from '../services/api';
 
@@ -279,6 +279,7 @@ function getItemLabel(p: any, days: number) {
 const Reservation: React.FC = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const errorRef = useRef<HTMLDivElement>(null);
   const [step, setStep] = useState(1);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [startDate, setStartDate] = useState('');
@@ -350,6 +351,13 @@ const Reservation: React.FC = () => {
     calcPrice();
     // 即時價格計算在第3步會自動觸發重新渲染
   }, [persons, startDate, endDate, rentStore, returnStore, discountInfo]);
+
+  // 當錯誤發生時，滾動到錯誤訊息位置
+  useEffect(() => {
+    if (error && errorRef.current) {
+      errorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [error]);
 
   // 在組件卸載時清理事件監聽器
   useEffect(() => {
@@ -911,20 +919,44 @@ const Reservation: React.FC = () => {
   return (
     <div className="max-w-3xl mx-auto py-8">
       <h1 className="text-3xl font-bold text-snow-900 mb-8 text-center">{t('reservation.title')}</h1>
+
+      {/* 錯誤訊息顯示區域 - 固定在標題下方 */}
+      {error && (
+        <div
+          ref={errorRef}
+          className="mb-6 bg-red-50 border-2 border-red-400 text-red-800 px-6 py-4 rounded-lg shadow-lg animate-pulse"
+          role="alert"
+        >
+          <div className="flex items-start gap-3">
+            <AlertCircle className="h-6 w-6 text-red-600 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <h3 className="font-bold text-lg mb-2">⚠️ 請填寫必填欄位</h3>
+              <p className="text-sm leading-relaxed">{error}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="card">
         <form className="space-y-6" onSubmit={handleSubmit}>
           {step === 1 && (
             <>
               <div>
-                <label className="block text-sm font-medium text-snow-700 mb-2">{t('reservation.step1.startDate')}</label>
+                <label className="block text-sm font-medium text-snow-700 mb-2">
+                  {t('reservation.step1.startDate')} <span className="text-red-600">*</span>
+                </label>
                 <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="input" min={getMinReservationDate()} required />
               </div>
               <div>
-                <label className="block text-sm font-medium text-snow-700 mb-2">{t('reservation.step1.endDate')}</label>
+                <label className="block text-sm font-medium text-snow-700 mb-2">
+                  {t('reservation.step1.endDate')} <span className="text-red-600">*</span>
+                </label>
                 <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="input" min={startDate || getMinReservationDate()} required />
               </div>
               <div className="mb-4">
-                <label className="block mb-1">{t('reservation.step1.numberOfPeople')}</label>
+                <label className="block mb-1">
+                  {t('reservation.step1.numberOfPeople')} <span className="text-red-600">*</span>
+                </label>
                 <input
                   type="number"
                   min={1}
@@ -939,7 +971,9 @@ const Reservation: React.FC = () => {
                 </p>
               </div>
               <div className="mb-4">
-                <label className="block mb-1">{t('reservation.step1.rentLocation')}</label>
+                <label className="block mb-1">
+                  {t('reservation.step1.rentLocation')} <span className="text-red-600">*</span>
+                </label>
                 <select className="input" value={rentStore} onChange={e => {
                   setRentStore(e.target.value);
                   // 當店鋪變更時，清空取件時間讓用戶重新選擇
@@ -950,7 +984,9 @@ const Reservation: React.FC = () => {
                 </select>
               </div>
               <div className="mb-4">
-                <label className="block mb-1">{t('reservation.step1.returnLocation')}</label>
+                <label className="block mb-1">
+                  {t('reservation.step1.returnLocation')} <span className="text-red-600">*</span>
+                </label>
                 <select className="input" value={returnStore} onChange={e => setReturnStore(e.target.value)} required>
                   <option value="" disabled style={{ color: '#aaa' }}>{t('reservation.step1.selectReturnLocation')}</option>
                   {storeOptions.map(opt => <option key={opt} value={opt}>{i18n.language === 'en' ? t(`options.stores.${opt === '富良野店' ? 'furano' : 'asahikawa'}`) : opt}</option>)}
@@ -961,10 +997,12 @@ const Reservation: React.FC = () => {
                 <h3 className="font-semibold text-blue-800 mb-3">{t('reservation.step1.pickupArrangement')}</h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-blue-700 mb-2">{t('reservation.step1.pickupDate')}</label>
-                    <input 
-                      type="date" 
-                      value={pickupDate} 
+                    <label className="block text-sm font-medium text-blue-700 mb-2">
+                      {t('reservation.step1.pickupDate')} <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      value={pickupDate}
                       onChange={e => {
                         setPickupDate(e.target.value);
                         // 如果選擇的日期是前一天，清空時間選擇讓用戶重新選擇
@@ -972,15 +1010,17 @@ const Reservation: React.FC = () => {
                         if (e.target.value === range.min) {
                           setPickupTime('');
                         }
-                      }} 
-                      className="input" 
+                      }}
+                      className="input"
                       min={startDate ? getPickupDateRange(startDate).min : ''}
                       max={startDate || ''}
-                      required 
+                      required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-blue-700 mb-2">{t('reservation.step1.pickupTime')}</label>
+                    <label className="block text-sm font-medium text-blue-700 mb-2">
+                      {t('reservation.step1.pickupTime')} <span className="text-red-600">*</span>
+                    </label>
                     <select
                       className="input"
                       value={pickupTime}
@@ -1035,22 +1075,47 @@ const Reservation: React.FC = () => {
           )}
           {step === 2 && (
             <div className="space-y-4">
-              <input className="input" placeholder={t('reservation.step2.name')} value={applicant.name} onChange={e => setApplicant({ ...applicant, name: e.target.value })} required />
-              <div className="flex gap-2">
-                <select className="input w-28" value={applicant.countryCode} onChange={e => setApplicant({ ...applicant, countryCode: e.target.value })}>
-                  {countryCodes.map(opt => <option key={opt.code} value={opt.code}>{opt.label}</option>)}
-                </select>
-                <input className="input flex-1" placeholder={t('reservation.step2.phone')} value={applicant.phone} onChange={e => setApplicant({ ...applicant, phone: e.target.value })} required />
+              <div>
+                <label className="block text-sm font-medium text-snow-700 mb-2">
+                  {t('reservation.step2.name')} <span className="text-red-600">*</span>
+                </label>
+                <input className="input" placeholder={t('reservation.step2.name')} value={applicant.name} onChange={e => setApplicant({ ...applicant, name: e.target.value })} required />
               </div>
-              <input className="input" placeholder={t('reservation.step2.email')} type="email" value={applicant.email} onChange={e => setApplicant({ ...applicant, email: e.target.value })} required />
-              <div className="flex gap-2">
-                <select className="input w-32" value={applicant.messenger} onChange={e => setApplicant({ ...applicant, messenger: e.target.value })} required>
-                  <option value="">{t('reservation.step2.messenger')}</option>
-                  {messengerTypes.map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-                <input className="input flex-1" placeholder={t('reservation.step2.messengerId')} value={applicant.messengerId} onChange={e => setApplicant({ ...applicant, messengerId: e.target.value })} required />
+              <div>
+                <label className="block text-sm font-medium text-snow-700 mb-2">
+                  {t('reservation.step2.phone')} <span className="text-red-600">*</span>
+                </label>
+                <div className="flex gap-2">
+                  <select className="input w-28" value={applicant.countryCode} onChange={e => setApplicant({ ...applicant, countryCode: e.target.value })}>
+                    {countryCodes.map(opt => <option key={opt.code} value={opt.code}>{opt.label}</option>)}
+                  </select>
+                  <input className="input flex-1" placeholder={t('reservation.step2.phone')} value={applicant.phone} onChange={e => setApplicant({ ...applicant, phone: e.target.value })} required />
+                </div>
               </div>
-              <input className="input" placeholder={t('reservation.step2.hotel')} value={applicant.hotel} onChange={e => setApplicant({ ...applicant, hotel: e.target.value })} required />
+              <div>
+                <label className="block text-sm font-medium text-snow-700 mb-2">
+                  {t('reservation.step2.email')} <span className="text-red-600">*</span>
+                </label>
+                <input className="input" placeholder={t('reservation.step2.email')} type="email" value={applicant.email} onChange={e => setApplicant({ ...applicant, email: e.target.value })} required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-snow-700 mb-2">
+                  {t('reservation.step2.messenger')} / {t('reservation.step2.messengerId')} <span className="text-red-600">*</span>
+                </label>
+                <div className="flex gap-2">
+                  <select className="input w-32" value={applicant.messenger} onChange={e => setApplicant({ ...applicant, messenger: e.target.value })} required>
+                    <option value="">{t('reservation.step2.messenger')}</option>
+                    {messengerTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                  <input className="input flex-1" placeholder={t('reservation.step2.messengerId')} value={applicant.messengerId} onChange={e => setApplicant({ ...applicant, messengerId: e.target.value })} required />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-snow-700 mb-2">
+                  {t('reservation.step2.hotel')} <span className="text-red-600">*</span>
+                </label>
+                <input className="input" placeholder={t('reservation.step2.hotel')} value={applicant.hotel} onChange={e => setApplicant({ ...applicant, hotel: e.target.value })} required />
+              </div>
               <div>
                 <div className="relative">
                   <input
@@ -1407,7 +1472,6 @@ const Reservation: React.FC = () => {
               </button>
             </div>
           )}
-          {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">{error}</div>}
           <div className="flex justify-between">
             {step > 1 && step < 5 && (
               <button
