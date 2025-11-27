@@ -156,7 +156,9 @@ export async function submitReservation(data: any) {
   if (!res.ok) {
     const errorData = await res.json();
     console.error('Backend error:', errorData);
-    throw new Error('送出失敗');
+    // 提取後端返回的具體錯誤訊息
+    const errorMessage = errorData.error || errorData.message || errorData.details || '送出失敗，請稍後再試';
+    throw new Error(errorMessage);
   }
   return res.json();
 }

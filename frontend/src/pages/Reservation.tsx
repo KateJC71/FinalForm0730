@@ -862,7 +862,7 @@ const Reservation: React.FC = () => {
     e.preventDefault();
     setError('');
     setIsSubmitting(true);
-    
+
     try {
       const payload = {
         applicant,
@@ -883,7 +883,13 @@ const Reservation: React.FC = () => {
       setReservationResponse(response);
       setStep(5);
     } catch (err) {
-      setError('送出失敗，請稍後再試');
+      // 顯示後端返回的具體錯誤訊息
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('送出失敗，請稍後再試');
+      }
+      console.error('提交預約失敗:', err);
     } finally {
       setIsSubmitting(false);
     }
