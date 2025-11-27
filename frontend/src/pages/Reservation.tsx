@@ -789,7 +789,7 @@ const Reservation: React.FC = () => {
       console.log(`缺漏欄位`, missing);
       if (missing.length > 0) {
         // Add invalid field markers for this person
-        const requiredFields = ['name', 'age', 'gender', 'height', 'weight', 'footSize', 'level', 'skiType', 'boardType', 'equipType'];
+        const requiredFields: (keyof typeof initialPerson)[] = ['name', 'age', 'gender', 'height', 'weight', 'footSize', 'level', 'skiType', 'boardType', 'equipType'];
         requiredFields.forEach(field => {
           if (!persons[i][field]) {
             newInvalidFields.add(`person.${i}.${field}`);
