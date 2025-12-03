@@ -23,6 +23,7 @@ export interface ReservationEmailData {
     clothingType?: string;
     helmetOnly?: string;
     fastWear?: string;
+    protectiveGear?: string;
   }>;
   startDate: string;
   endDate: string;
@@ -138,6 +139,7 @@ class EmailService {
                 ${person.clothingType && person.clothingType !== '否' ? `<tr><th>雪衣需求</th><td>${person.clothingType}</td></tr>` : ''}
                 ${person.helmetOnly === '是' ? `<tr><th>安全帽</th><td>需要</td></tr>` : ''}
                 ${person.fastWear === '是' ? `<tr><th>Fase快穿</th><td>需要</td></tr>` : ''}
+                ${person.protectiveGear && person.protectiveGear !== '否' ? `<tr><th>護具</th><td>${person.protectiveGear}</td></tr>` : ''}
             </table>
         </div>
         `).join('')}
@@ -258,6 +260,7 @@ class EmailService {
             ${person.clothingType && person.clothingType !== '否' ? `<tr><th>雪衣</th><td>${person.clothingType}</td></tr>` : ''}
             ${person.helmetOnly === '是' ? `<tr><th>安全帽</th><td>需要</td></tr>` : ''}
             ${person.fastWear === '是' ? `<tr><th>Fase快穿</th><td>需要</td></tr>` : ''}
+            ${person.protectiveGear && person.protectiveGear !== '否' ? `<tr><th>護具</th><td>${person.protectiveGear}</td></tr>` : ''}
         </table>
         `).join('')}
     </div>
