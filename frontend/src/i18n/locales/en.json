@@ -169,6 +169,10 @@
       "pickupNote3": "Asahikawa Store Hours: 07:30-18:30 (Last pickup 18:30)",
       "pickupNote4": "8:00-12:00 is peak hours, reservation customers have priority"
     },
+    "dateWarning": {
+      "sameDayError": "Cannot reserve for today or tomorrow. For same-day rentals, please visit our store directly.",
+      "shortNoticeWarning": "Your selected date is within 3 days. Please contact us via official Line or WhatsApp after completing your reservation to confirm availability of equipment."
+    },
     "policy": {
       "title": "Refund & Rescheduling Policy (Based on Pickup Date)",
       "refundRules": "Refund Rules",

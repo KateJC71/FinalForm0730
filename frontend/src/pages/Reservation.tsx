@@ -52,15 +52,45 @@ const getMinReservationDate = () => {
 // 獲取取件日期的範圍（開始日當天或前一天）
 const getPickupDateRange = (startDate: string) => {
   if (!startDate) return { min: '', max: '' };
-  
+
   const start = new Date(startDate);
   const dayBefore = new Date(start);
   dayBefore.setDate(start.getDate() - 1);
-  
+
   return {
     min: dayBefore.toISOString().split('T')[0],
     max: startDate
   };
+};
+
+// 檢查選擇的日期與今天的距離
+const checkDateProximity = (selectedDate: string, t: (key: string) => string): { type: 'error' | 'warning'; message: string } | null => {
+  if (!selectedDate) return null;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const selected = new Date(selectedDate);
+  selected.setHours(0, 0, 0, 0);
+
+  const diffTime = selected.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays <= 1) {
+    // 當天或隔一天 - 阻止選擇
+    return {
+      type: 'error',
+      message: t('reservation.dateWarning.sameDayError')
+    };
+  } else if (diffDays <= 3) {
+    // 2-3天內 - 顯示警告但允許繼續
+    return {
+      type: 'warning',
+      message: t('reservation.dateWarning.shortNoticeWarning')
+    };
+  }
+
+  return null;
 };
 
 // 根據取件日期和取件店決定可選的時間
@@ -311,6 +341,12 @@ const Reservation: React.FC = () => {
   // 載入狀態管理
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isValidatingDiscount, setIsValidatingDiscount] = useState(false);
+
+  // 日期警示狀態
+  const [dateWarning, setDateWarning] = useState<{
+    type: 'error' | 'warning';
+    message: string;
+  } | null>(null);
 
   // 初始化時從 localStorage 恢復數據
   useEffect(() => {
@@ -994,7 +1030,49 @@ const Reservation: React.FC = () => {
                 <label className="block text-sm font-medium text-snow-700 mb-2">
                   {t('reservation.step1.startDate')} <span className="text-red-600">*</span>
                 </label>
-                <input type="date" value={startDate} onChange={e => { setStartDate(e.target.value); setInvalidFields(prev => { const next = new Set(prev); next.delete('startDate'); return next; }); }} className={getInputClass('startDate')} min={getMinReservationDate()} required />
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={e => {
+                    const newDate = e.target.value;
+                    const warning = checkDateProximity(newDate, t);
+
+                    if (warning?.type === 'error') {
+                      // 阻止選擇，顯示錯誤
+                      setDateWarning(warning);
+                      // 不更新 startDate，保持原值
+                      return;
+                    }
+
+                    // 設置警告（如果有）或清除
+                    setDateWarning(warning);
+                    setStartDate(newDate);
+                    setInvalidFields(prev => {
+                      const next = new Set(prev);
+                      next.delete('startDate');
+                      return next;
+                    });
+                  }}
+                  className={getInputClass('startDate')}
+                  min={getMinReservationDate()}
+                  required
+                />
+                {dateWarning && (
+                  <div className={`mt-3 p-4 rounded-lg border-2 ${
+                    dateWarning.type === 'error'
+                      ? 'bg-red-50 border-red-400 text-red-800'
+                      : 'bg-yellow-50 border-yellow-400 text-yellow-800'
+                  }`} role="alert">
+                    <div className="flex items-start gap-3">
+                      <AlertCircle className={`h-5 w-5 flex-shrink-0 mt-0.5 ${
+                        dateWarning.type === 'error' ? 'text-red-600' : 'text-yellow-600'
+                      }`} />
+                      <div className="flex-1">
+                        <p className="text-sm leading-relaxed">{dateWarning.message}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-snow-700 mb-2">
