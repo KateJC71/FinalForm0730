@@ -84,7 +84,7 @@ class EmailService {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>預約確認 - 雪具預約系統</title>
+    <title>預約收件 - 雪具預約系統</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
         .header { background: #2563eb; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
@@ -101,13 +101,14 @@ class EmailService {
 </head>
 <body>
     <div class="header">
-        <h1>🎿 預約確認通知</h1>
+        <h1>🎿 預約收件通知</h1>
         <p>感謝您選擇我們的雪具租借服務</p>
     </div>
     
     <div class="content">
         <p>親愛的 <strong>${data.applicant.name}</strong> 您好，</p>
-        <p>您的雪具預約已成功受理，以下是您的預約詳情：</p>
+        <p>我們已經收到您的預約申請，會在確認庫存狀況之後寄送付款連結給您。若確定庫存已經租罄，我們也會通知您預約無法受理。請您稍後。</p>
+        <p>以下是您的預約詳情：</p>
         
         <div class="reservation-info">
             <h3>📋 預約基本資訊</h3>
@@ -277,9 +278,9 @@ class EmailService {
       const mailOptions = {
         from: `"雪具預約系統" <${process.env.SMTP_USER}>`,
         to: data.applicant.email,
-        subject: `Snow Force雪具租借預約 ${data.reservationNumber}`,
+        subject: `Snow Force雪具租借預約收件通知 ${data.reservationNumber}`,
         html: htmlContent,
-        text: `預約確認通知 - 預約編號：${data.reservationNumber}，租借日期：${data.startDate} 至 ${data.endDate}，取件時間：${data.pickupDate} ${data.pickupTime}，總金額：¥${data.totalPrice.toLocaleString()}`,
+        text: `預約收件通知 - 預約編號：${data.reservationNumber}，租借日期：${data.startDate} 至 ${data.endDate}，取件時間：${data.pickupDate} ${data.pickupTime}，總金額：¥${data.totalPrice.toLocaleString()}`,
       };
 
       const result = await this.transporter.sendMail(mailOptions);
