@@ -165,8 +165,8 @@ class EmailService {
         <div class="important">
             <h3>⚠️ 重要提醒</h3>
             <ul>
-                <li>請準時於 ${data.pickupDate} ${data.pickupTime} 到 ${data.rentStore} 取件</li>
-                <li>取件時請攜帶身分證明文件</li>
+                <li>若預約成功，我們最晚會在收到預約申請的隔日寄送付款連結給您，須完成付款，才算完成預約流程。</li>
+                <li>為保護先完成付款的客戶的權益，若未能於取件日三日前完成付款，我們會將此訂單視為取消，不予保留預約雪具。敬請見諒。</li>
                 <li>請確認所有個人資料正確，如有異動請盡快聯繫我們</li>
             </ul>
             
