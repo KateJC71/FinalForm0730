@@ -30,22 +30,19 @@ const yesNo = ['是', '否'];
 const protectiveGearOptions = ['否', '護具全配 (護腕+護膝+護臀)', '護腕', '護膝', '護臀'];
 const storeOptions = ['富良野店', '旭川店'];
 
-// 獲取12/1開始的最小日期
+// 獲取最小預約日期
 const getMinReservationDate = () => {
   const today = new Date();
   const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth();
-  
-  // 如果現在已經是12月1日或之後，使用當天的日期
-  if (currentMonth === 11) {
-    // 已經是12月，使用當天日期
+  const currentMonth = today.getMonth(); // 0 = 一月, 11 = 十二月
+
+  // 滑雪季節：12月到隔年5月
+  // 如果在滑雪季節內（12月或1-5月），使用今天日期
+  if (currentMonth === 11 || currentMonth <= 4) {
     return today.toISOString().split('T')[0];
-  } else if (currentMonth < 11) {
-    // 12月之前，使用當年的12/1（作為未來日期）
-    return `${currentYear}-12-01`;
   } else {
-    // 其他情況（不太可能發生），使用下一年12/1
-    return `${currentYear + 1}-12-01`;
+    // 滑雪季節外（6-11月），使用當年12/1
+    return `${currentYear}-12-01`;
   }
 };
 
