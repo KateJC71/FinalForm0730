@@ -297,6 +297,7 @@ async function initDatabase() {
           ('Comma26', 'Comma 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1),
           ('Daiei26', 'Daiei 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1),
           ('Ian26', 'Ian 合作優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1),
+          ('Mako26', 'Mako 合作優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1),
           ('JWA26', 'JWA 合作優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1),
           ('ohboards2526', 'OhBoards 合作優惠', 'percentage', 10, '2024-01-01', '2026-05-31', 1),
           ('SF05', 'SnowForce 5% 優惠', 'percentage', 5, '2024-01-01', '2026-05-31', 1),
