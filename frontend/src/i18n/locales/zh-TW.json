@@ -275,7 +275,7 @@
       "subtotal": "總價"
     },
     "step5": {
-      "title": "預約成功！",
+      "title": "您已完成雪具預約申請",
       "reservationDetails": "預約詳情",
       "reservationNumber": "預約編號",
       "reservationPeriod": "預約日期",
@@ -284,7 +284,7 @@
       "totalPrice": "總價",
       "numberOfPeople": "人數",
       "people": "人",
-      "emailNotice": "感謝您的預約，系統將會寄送預約確認信至您的電子信箱，請留意信件。"
+      "emailNotice": "感謝您的預約申請，我們最晚會在隔天寄送付款連結給您。請務必在收到付款連結後的三天之內完成付款，收到我們的付款完成通知之後，才算完成整個預約流程喔。"
     },
     "errors": {
       "fillFields": "請填寫以下欄位：",

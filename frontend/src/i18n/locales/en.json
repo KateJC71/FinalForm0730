@@ -275,7 +275,7 @@
       "subtotal": "Total"
     },
     "step5": {
-      "title": "Reservation Successful!",
+      "title": "Your Ski Equipment Reservation Application is Complete",
       "reservationDetails": "Reservation Details",
       "reservationNumber": "Reservation Number",
       "reservationPeriod": "Reservation Period",
@@ -284,7 +284,7 @@
       "totalPrice": "Total Price",
       "numberOfPeople": "Number of People",
       "people": "people",
-      "emailNotice": "Thank you for your reservation. A confirmation email will be sent to your email address. Please check your inbox."
+      "emailNotice": "Thank you for your reservation application. We will send you a payment link by the next day at the latest. Please complete the payment within 3 days of receiving the payment link. Your reservation will only be confirmed after we receive your payment completion notification."
     },
     "errors": {
       "fillFields": "Please fill in the following fields: ",
